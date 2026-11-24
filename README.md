@@ -19,22 +19,12 @@ Para levar o progresso para outro aparelho, use **Backup do progresso** no fim d
 
 Limpar os dados do navegador apaga o progresso. Faça backup de vez em quando.
 
-## Publicar no GitHub Pages
-
-1. Crie um repositório público no GitHub, por exemplo `central-droid-tycoon`.
-2. Envie os arquivos desta pasta (`index.html`, `README.md` e `.nojekyll`) para a raiz do repositório, na branch `main`.
-3. No repositório, abra **Settings → Pages**.
-4. Em **Build and deployment → Source**, escolha **Deploy from a branch**. Em **Branch**, escolha `main` e a pasta `/ (root)`, e clique em **Save**.
-5. Depois de um ou dois minutos, o site fica em `https://SEU-USUARIO.github.io/central-droid-tycoon/`.
-
-Para atualizar o site, substitua o `index.html` no repositório. O GitHub publica a nova versão sozinho.
-
 ## Versões
 
 As duas versões ficam no fim do script do `index.html`:
 
 - `GAME_VERSION` e `GAME_DATE`: a versão da ilha para a qual os dados estão atualizados. Aparece no canto superior direito.
-- `SITE_VERSION`: a versão desta ferramenta. Aparece no rodapé. Fora do Claude ela mostra `v0.1 Beta`.
+- `SITE_VERSION`: a versão desta ferramenta. Aparece no rodapé.
 
 ## Fontes dos dados
 
