@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Central Droid Tycoon</title>
-<meta name="description" content="Ferramenta de fã para Star Wars: Droid Tycoon (Fortnite): inventário, renascimentos dos 6 ciclos, Scourgedex e receitas de fusão.">
+<meta name="description" content="Ferramenta de fã para Star Wars: Droid Tycoon (Fortnite) · Fan tool · Herramienta de fans: inventário, renascimentos, Scourgedex e fusões.">
 <meta name="theme-color" content="#172028">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172028'/%3E%3Ccircle cx='16' cy='17' r='8' fill='none' stroke='%236cc0ea' stroke-width='3'/%3E%3Ccircle cx='16' cy='17' r='2.5' fill='%236cc0ea'/%3E%3Crect x='14.5' y='4' width='3' height='5' rx='1.5' fill='%236cc0ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,6 +65,15 @@ button, input, select { font: inherit; color: inherit; }
 a { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 [hidden] { display: none !important; }
+
+/* Barra do topo e idioma */
+.topbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; margin-bottom: -10px; }
+.brand { font: 700 15px var(--display); letter-spacing: .02em; color: var(--muted); }
+.lang { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.lang-icon { font-size: 16px; margin-right: 2px; }
+.lang button { min-height: 36px; min-width: 52px; padding: 4px 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; font: 600 13px var(--mono); }
+.lang button:hover { border-color: var(--accent); }
+.lang button[aria-pressed=true] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 
 /* Faixa do modo */
 .mode { position: relative; background: var(--ink); color: var(--bg); border-radius: 8px; padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 18px 28px; align-items: start; }
@@ -364,6 +373,15 @@ dialog ul { margin: 8px 0 0; padding-left: 18px; font-family: var(--mono); font-
 </head>
 <body>
 <div class="wrap">
+  <div class="topbar">
+    <span class="brand">Central Droid Tycoon</span>
+    <div class="lang" role="group" aria-label="Idioma · Language · Idioma">
+      <span class="lang-icon" aria-hidden="true">🌐</span>
+      <button type="button" data-lang="pt" lang="pt-BR" title="Português">PT-BR</button>
+      <button type="button" data-lang="en" lang="en-US" title="English">EN-US</button>
+      <button type="button" data-lang="es" lang="es" title="Español">ES</button>
+    </div>
+  </div>
   <section class="mode" aria-labelledby="mode-name">
     <div class="game-ver" title="Versão da ilha no Fortnite para a qual os dados desta página estão atualizados">
       <span>Atualizado para a ilha</span>
@@ -701,10 +719,712 @@ dialog ul { margin: 8px 0 0; padding-left: 18px; font-family: var(--mono); font-
 
 <script>
 "use strict";
+/* ================= Idiomas ================= */
+// O português é o texto original da página. Inglês e espanhol vêm deste dicionário, com o texto em português como chave.
+const I18N = {
+"en": {
+"Versão da ilha no Fortnite para a qual os dados desta página estão atualizados": "Fortnite island version this page's data is up to date with",
+"Atualizado para a ilha": "Updated for island",
+"Ilha do Fortnite": "Fortnite island",
+"Modo criado por FOAD": "Mode created by FOAD",
+"Copiar código": "Copy code",
+"Ver a ilha no site do Fortnite": "See the island on the Fortnite website",
+"<b>Base e créditos</b>Compre projetos (blueprints) na esteira e no Sandcrawler, monte os droids na oficina e deixe que gerem créditos por segundo.": "<b>Base and credits</b>Buy blueprints on the conveyor and at the Sandcrawler, build droids in the workshop and let them earn credits per second.",
+"<b>Raridades</b>Cada droid evolui com chips: Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar e Kyber. Flagelo vale para qualquer pedido.": "<b>Tiers</b>Each droid levels up with chips: Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar and Kyber. Scourge counts for any request.",
+"<b>Renascimento</b>Cada nível pede créditos e três droids ativos na base. Gasta os créditos, mantém os droids e dá bônus permanentes.": "<b>Rebirth</b>Each level asks for credits and three active droids in your base. It spends the credits, keeps the droids and gives permanent bonuses.",
+"<b>Super Renascimento e Flagelo</b>O Super Renascimento libera no nível 12 e leva ao próximo dos 6 ciclos. Às sextas, entregue Flagelos no Scourgedex para prestigiar.": "<b>Super Rebirth and Scourge</b>Super Rebirth unlocks at level 12 and takes you to the next of the 6 cycles. On Fridays, turn in Scourge droids at the Scourgedex to prestige.",
+"Ferramenta de fã, sem ligação com a Epic Games, a Lucasfilm ou a FOAD. Os dados vêm de guias da comunidade e podem mudar com atualizações do jogo.": "Fan-made tool, not affiliated with Epic Games, Lucasfilm or FOAD. The data comes from community guides and may change with game updates.",
+"Seções": "Sections",
+"Inventário": "Inventory",
+"Renascimentos": "Rebirths",
+"Controle Flagelo": "Scourge Tracker",
+"Fusões": "Fusions",
+"Carregando suas marcações…": "Loading your progress…",
+"Inventário de Droids": "Droid Inventory",
+"Marque os droids que você tem. Quem você tem e entra numa fusão ainda não fabricada aparece com o aviso <strong>Guardar</strong>, para você não vender por engano. As receitas e os ingredientes separados ficam na aba Fusões.": "Check the droids you have. Droids you have that go into a fusion you haven't crafted yet get a <strong>Keep</strong> warning, so you don't sell them by mistake. Recipes and set-aside ingredients are in the Fusions tab.",
+"droids que você tem": "droids you have",
+"droids para guardar (entram em fusão)": "droids to keep (used in fusions)",
+"fusões prontas para fundir": "fusions ready to fuse",
+"Buscar droid": "Search droid",
+"Buscar droid no inventário": "Search droid in inventory",
+"Filtrar por situação": "Filter by status",
+"Todos": "All",
+"Faltam": "Missing",
+"Tenho": "Have",
+"Entram em fusão": "Used in fusions",
+"Filtrar por tipo": "Filter by type",
+"Todo tipo": "Any type",
+"Não venda estes ainda": "Don't sell these yet",
+"Você tem estes droids e eles entram em fusões ainda não fabricadas. O número mostra quantas cópias essas fusões consomem. Toque em um nome para localizar o droid.": "You have these droids and they go into fusions you haven't crafted yet. The number shows how many copies those fusions use up. Tap a name to find the droid.",
+"Nenhum droid com esses filtros. Limpe a busca ou escolha outra situação.": "No droids match these filters. Clear the search or pick another status.",
+"Contagem: 69 droids de projeto, 28 de fusão, 4 de protocolo e 11 icônicos.": "Count: 69 blueprint droids, 28 fusion, 4 protocol and 11 iconic.",
+"Limpar o inventário": "Clear inventory",
+"Renascimentos: Ciclo 2": "Rebirths: Cycle 2",
+"Escolha o ciclo e informe a raridade que você tem de cada droid. A página mostra o que falta, os chips necessários, onde o droid volta a ser pedido e se pode ser vendido depois de cada renascimento.": "Pick the cycle and enter the tier you have of each droid. The page shows what's missing, the chips you need, where the droid is asked for again and whether you can sell it after each rebirth.",
+"Escolher ciclo": "Choose cycle",
+"renascimentos concluídos": "rebirths done",
+"próximo": "next",
+"droids prontos para o próximo": "droids ready for the next one",
+"droids para vender agora": "droids to sell now",
+"Buscar droid, como R7": "Search droid, like R7",
+"Buscar droid nos renascimentos": "Search droid in rebirths",
+"Quais renascimentos mostrar": "Which rebirths to show",
+"Só o próximo": "Next only",
+"Ocultar concluídos": "Hide completed",
+"Meta: chegar ao": "Goal: reach",
+"Resetar ciclo": "Reset cycle",
+"Pode vender agora": "Safe to sell now",
+"Nenhum renascimento para mostrar. Desmarque \"Ocultar concluídos\", limpe a busca ou escolha \"Todos\".": "No rebirths to show. Uncheck \"Hide completed\", clear the search or choose \"All\".",
+"Projetos para um amigo guardar": "Blueprints for a friend to hold",
+"Projeto a guardar": "Blueprint to hold",
+"Cobre no próximo ciclo": "Covers in next cycle",
+"Valor aprox.": "Approx. value",
+"Com o amigo": "With your friend",
+"<strong>Como a ordem é feita:</strong> pelo preço aproximado do droid na raridade mais alta que o próximo ciclo pede, que junta a raridade do droid (Mítico custa mais que Comum) e o nível de evolução. Quem é pedido mais vezes ganha um bônus, porque um projeto só cobre todos esses pedidos.": "<strong>How the order is set:</strong> by the droid's approximate price at the highest tier the next cycle asks for, which combines the droid's rarity (Mythic costs more than Common) and its upgrade tier. Droids asked for more often get a bonus, because one blueprint covers all of those requests.",
+"<strong>Se tiver um projeto Flagelo</strong> de algum destes droids, guarde esse: Flagelo vale para qualquer pedido. Um projeto Kyber precisa ser ativado depois de montado, o que custa Nova Crystals.": "<strong>If you have a Scourge blueprint</strong> of any of these droids, hold that one: Scourge counts for any request. A Kyber blueprint has to be activated after it's built, which costs Nova Crystals.",
+"<strong>Antes de confiar nisso:</strong> não encontrei guia sobre passar projetos para um amigo. A lista assume que o projeto volta para você na raridade em que foi guardado. Os preços vêm do SRB Control e são aproximados para droids que não são Míticos.": "<strong>Before relying on this:</strong> I found no guide about handing blueprints to a friend. The list assumes the blueprint comes back to you at the tier it was held at. Prices come from SRB Control and are approximate for droids that aren't Mythic.",
+"Regras usadas nos cálculos": "Rules used in the calculations",
+"<strong>Numeração:</strong> cada cartão segue o jogo e mostra o nível em que você está e o nível que alcança. \"Nível 27 → 28\" é o que a estação pede quando você está no nível 27.": "<strong>Numbering:</strong> each card follows the game and shows the level you are at and the level you reach. \"Level 27 → 28\" is what the station asks for while you are at level 27.",
+"<strong>Raridade máxima:</strong> é o nível mais alto pedido no ciclo até a sua meta. A ordem é Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar e Kyber, e um nível maior cumpre qualquer pedido menor.": "<strong>Highest tier:</strong> the highest tier asked for in the cycle up to your goal. The order is Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar and Kyber, and a higher tier meets any lower request.",
+"<strong>Renascimento comum:</strong> consome todos os créditos, mas mantém os droids. Os três pedidos precisam estar ativos na base.": "<strong>Regular rebirth:</strong> uses up all your credits but keeps your droids. The three requested droids must be active in your base.",
+"<strong>Super Renascimento:</strong> libera a partir do nível 12, apaga droids, créditos e base, e leva ao próximo ciclo. Depois do ciclo 6, volta ao ciclo 1. Por isso a meta muda o que pode ser vendido: o que só voltaria depois dela já não precisa ficar.": "<strong>Super Rebirth:</strong> unlocks from level 12, wipes droids, credits and base, and takes you to the next cycle. After cycle 6 it goes back to cycle 1. That's why your goal changes what you can sell: anything only needed after it doesn't have to stay.",
+"<strong>Antes de vender:</strong> nunca venda um droid Flawless, por causa do desbloqueio permanente no Droidex. Se tiver uma cópia de nível maior, a de nível menor também pode sair.": "<strong>Before selling:</strong> never sell a Flawless droid, because of the permanent Droidex unlock. If you have a higher-tier copy, the lower-tier one can go too.",
+"<strong>Kyber:</strong> só conta para o renascimento depois de ativado.": "<strong>Kyber:</strong> only counts for a rebirth once activated.",
+"<strong>Onde está:</strong> droid montado conta para o renascimento onde quer que esteja: em uso, no saguão, nas bancadas de produção, na bancada ou no tanque de fusão. Só projeto guardado não conta, porque precisa ser montado antes. Sem essa informação, a página considera que o droid está montado.": "<strong>Where it is:</strong> a built droid counts for the rebirth wherever it is: in use, in the lobby, at the production benches, at the fusion bench or in the fusion tank. Only a stored blueprint doesn't count, because it has to be built first. Without this info, the page assumes the droid is built.",
+"<strong>Fusões valem pelos ingredientes:</strong> desde a versão 1.38.0, um droid de fusão conta para o pedido de cada um dos seus ingredientes. Um LOW-MO, por exemplo, serve onde o renascimento pede A-LT ou Loadlifter. Cada droid mostra as fusões que valem por ele, e as que você marcou como fabricadas na aba Fusões aparecem em verde. A página não soma a fusão no \"Você tem\": informe a raridade da fusão que vai usar. Ainda não achei confirmação de que a fusão conta na raridade dela, então confira no jogo.": "<strong>Fusions count for their ingredients:</strong> since version 1.38.0, a fusion droid counts toward the request for each of its ingredients. A LOW-MO, for example, works where the rebirth asks for A-LT or Loadlifter. Each droid lists the fusions that count for it, and the ones you marked as crafted in the Fusions tab show in green. The page doesn't add the fusion to \"You have\": enter the tier of the fusion you'll use. I haven't confirmed that the fusion counts at its own tier, so check in game.",
+"<strong>Kyber ativado:</strong> um Kyber só conta depois de ativado no NPC do sorteio de cor do Kyber.": "<strong>Activated Kyber:</strong> a Kyber only counts after it's activated at the NPC that rolls the Kyber color.",
+"<strong>Chips:</strong> existe um tipo só de chip. O que muda é o preço de cada passo, que depende da raridade do droid. Quem você ainda não tem conta a partir de Base. Por passo (Base → Gold até Stellar → Kyber), droid Comum: 10, 25, 40, 80, 120, 180, 240; Raro: 30, 60, 100, 250, 400, 750, 1.000; Épico: 120, 180, 240, 2.000, 5.000, 8.000, 12.000; Lendário: 400, 1.200, 2.500, 6.000, 16.000, 24.000, 30.000; Mítico: 4.000, 8.000, 14.000, 30.000, 60.000, 90.000, 110.000. O último passo vem do SRB Control.": "<strong>Chips:</strong> there is only one kind of chip. What changes is the price of each step, which depends on the droid's rarity. Droids you don't have yet are counted from Base. Per step (Base → Gold through Stellar → Kyber), Common droid: 10, 25, 40, 80, 120, 180, 240; Rare: 30, 60, 100, 250, 400, 750, 1,000; Epic: 120, 180, 240, 2,000, 5,000, 8,000, 12,000; Legendary: 400, 1,200, 2,500, 6,000, 16,000, 24,000, 30,000; Mythic: 4,000, 8,000, 14,000, 30,000, 60,000, 90,000, 110,000. The last step comes from SRB Control.",
+"<strong>Flagelo:</strong> desde a versão 1.36.0, um droid Flagelo vale para qualquer raridade pedida, inclusive Kyber. Nenhum renascimento pede Flagelo, e não dá para evoluir um droid até ele com chips.": "<strong>Scourge:</strong> since version 1.36.0, a Scourge droid counts for any requested tier, including Kyber. No rebirth asks for Scourge, and you can't upgrade a droid to it with chips.",
+"<strong>Progresso:</strong> cada ciclo guarda o seu. Resetar um ciclo não mexe nos outros nem no inventário.": "<strong>Progress:</strong> each cycle keeps its own. Resetting a cycle doesn't touch the others or the inventory.",
+"<a href=\"https://tycoon-tools.com/droid-tycoon/rebirth-requirements/\">Tycoon Tools: ciclos 1 a 6</a> <a href=\"https://droidex.nackz.dev/rebirth-requirements/\">Droidex: ciclos 1 a 5</a> <a href=\"https://dillyapp.gg/droidex/rebirths\">Dilly: caminhos 1 a 6</a> <a href=\"https://allthings.how/super-rebirth-guide-for-fortnite-star-wars-droid-tycoon/\">AllThings.How: Super Renascimento</a> <a href=\"https://tycoon-tools.com/droid-tycoon/guide/\">Tycoon Tools: regras</a> <a href=\"https://x.com/FoadZone/status/2113800815844688341\">Notas da versão 1.36.0: Flagelo</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: preços e raridades</a>": "<a href=\"https://tycoon-tools.com/droid-tycoon/rebirth-requirements/\">Tycoon Tools: cycles 1 to 6</a> <a href=\"https://droidex.nackz.dev/rebirth-requirements/\">Droidex: cycles 1 to 5</a> <a href=\"https://dillyapp.gg/droidex/rebirths\">Dilly: paths 1 to 6</a> <a href=\"https://allthings.how/super-rebirth-guide-for-fortnite-star-wars-droid-tycoon/\">AllThings.How: Super Rebirth</a> <a href=\"https://tycoon-tools.com/droid-tycoon/guide/\">Tycoon Tools: rules</a> <a href=\"https://x.com/FoadZone/status/2113800815844688341\">Patch notes 1.36.0: Scourge</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: prices and rarities</a>",
+"Controle Flagelo: Scourgedex": "Scourge Tracker: Scourgedex",
+"O Scourgedex pede a versão Flagelo dos 101 droids que não são icônicos. Para cada um, marque onde está o seu Flagelo (projeto guardado, montado em uso ou no saguão) ou se já entregou. A entrega consome o droid. Com o livro cheio, visite o Scourge numa sexta-feira para prestigiar.": "The Scourgedex asks for the Scourge version of the 101 non-iconic droids. For each one, mark where your Scourge copy is (stored blueprint, built and in use, or in the lobby) or whether you already turned it in. Turning in uses up the droid. With the book full, visit the Scourge on a Friday to prestige.",
+"Flagelos entregues": "Scourge droids turned in",
+"Flagelos com você, ainda não entregues": "Scourge droids you have, not turned in yet",
+"próximo marco": "next milestone",
+"prestígios feitos (Hive Mind +1 cada)": "prestiges done (+1 Hive Mind each)",
+"Marcos do Scourgedex": "Scourgedex milestones",
+"Prestígios feitos:": "Prestiges done:",
+"Diminuir prestígios": "Decrease prestiges",
+"Aumentar prestígios": "Increase prestiges",
+"Registrar prestígio": "Log prestige",
+"Fusões em Flagelo: plano mais barato": "Scourge fusions: cheapest plan",
+"Uma fusão sai Flagelo com <strong>um ingrediente Flagelo e os outros dois em Kyber</strong>, em qualquer ordem. Assim, você não precisa conseguir os três ingredientes em Flagelo, e a escolha de qual vai em Flagelo muda muito o custo em chips.": "A fusion comes out Scourge with <strong>one Scourge ingredient and the other two at Kyber</strong>, in any order. So you don't need all three ingredients as Scourge, and which one goes in as Scourge changes the chip cost a lot.",
+"<strong>Marque os Kyber que você já tem.</strong> Eles deixam de custar chips, e o plano passa a sugerir em Flagelo o ingrediente restante mais fácil de achar. Com um Loadlifter Kyber pronto, por exemplo, o LOW-MO pede só um A-LT Flagelo e um A-LT Kyber.": "<strong>Mark the Kybers you already have.</strong> They stop costing chips, and the plan suggests the easiest remaining ingredient to find as Scourge. With a Loadlifter Kyber ready, for example, LOW-MO only needs an A-LT Scourge and an A-LT Kyber.",
+"<strong>Sem Kyber nenhum, o Flagelo vai no ingrediente mais caro de levar a Kyber.</strong> No LOW-MO, um Loadlifter Flagelo deixa os dois A-LT para subir: 5.180 chips, contra mais de 318 mil no caminho contrário.": "<strong>With no Kybers, Scourge goes on the ingredient that's most expensive to take to Kyber.</strong> In LOW-MO, a Loadlifter Scourge leaves the two A-LTs to upgrade: 5,180 chips, versus over 318,000 the other way around.",
+"<strong>Você escolhe.</strong> Em cada fusão dá para trocar o ingrediente que vai em Flagelo. A página mostra quantos chips a escolha custa.": "<strong>You choose.</strong> In each fusion you can change which ingredient goes in as Scourge. The page shows how many chips that choice costs.",
+"<strong>Entregar consome o droid.</strong> O Flagelo que vai na fusão precisa ser outra cópia, além da que você entrega no espaço dele no Scourgedex.": "<strong>Turning in uses up the droid.</strong> The Scourge that goes into the fusion has to be another copy, besides the one you turn in for its own Scourgedex slot.",
+"<strong>Fusão rende em dobro:</strong> a fusão Flagelo preenche o espaço dela no Scourgedex gastando um Flagelo só, em vez de três.": "<strong>Fusions pay off twice:</strong> a Scourge fusion fills its own Scourgedex slot while using only one Scourge, instead of three.",
+"Sugestões por fusão": "Suggestions per fusion",
+"Fusão": "Fusion",
+"Ingrediente em Flagelo": "Scourge ingredient",
+"Ingredientes em Kyber": "Kyber ingredients",
+"Chips que faltam": "Chips still needed",
+"Situação": "Status",
+"Todas as fusões já foram entregues em Flagelo.": "Every fusion has already been turned in as Scourge.",
+"<strong>Onde está:</strong> projeto guardado precisa ser montado antes de fundir. Droid montado pode estar em uso, no saguão, nas bancadas de produção ou na bancada ou tanque de fusão.": "<strong>Where it is:</strong> a stored blueprint has to be built before fusing. A built droid can be in use, in the lobby, at the production benches, or at the fusion bench or tank.",
+"<strong>Chips:</strong> contados de Base até Kyber para cada Kyber que você ainda não tem. Se você já tem o droid em raridade maior, o custo real é menor. Um Kyber ainda precisa ser ativado.": "<strong>Chips:</strong> counted from Base to Kyber for each Kyber you don't have yet. If you already have the droid at a higher tier, the real cost is lower. A Kyber still has to be activated.",
+"<strong>Divergência:</strong> um guia aceita Stellar no lugar de Kyber nos dois outros slots. Se funcionar no jogo, o custo cai.": "<strong>Conflicting info:</strong> one guide accepts Stellar instead of Kyber in the other two slots. If that works in game, the cost goes down.",
+"<strong>KL-NK:</strong> usa dois PZ, que é protocolo. Protocolo não vira Flagelo com chips, só sai Flagelo da caixa do Scourge. Confira se PZ chega a Kyber com chips.": "<strong>KL-NK:</strong> uses two PZ, a protocol droid. Protocol droids can't become Scourge with chips; Scourge ones only come from the Scourge crate. Check whether PZ can reach Kyber with chips.",
+"Buscar droid no Scourgedex": "Search droid in the Scourgedex",
+"Com você": "You have",
+"Entregues": "Turned in",
+"Nenhum droid com esses filtros.": "No droids match these filters.",
+"Como o Scourgedex funciona": "How the Scourgedex works",
+"<strong>Como conseguir Flagelos:</strong> na esteira às sextas, em caixas do Scourge das missões (nível de renascimento maior dá droids melhores) e por fusão. Protocolo em Flagelo só sai da caixa.": "<strong>How to get Scourge droids:</strong> on the conveyor on Fridays, from Scourge crates from missions (a higher rebirth level gives better droids) and by fusing. Scourge protocol droids only come from the crate.",
+"<strong>Entrega:</strong> consome o droid e pode ser feita em qualquer dia. O prestígio só acontece numa sexta-feira, com o livro cheio, falando com o Scourge nos arredores do mapa.": "<strong>Turning in:</strong> uses up the droid and can be done any day. Prestige only happens on a Friday, with the book full, by talking to the Scourge on the outskirts of the map.",
+"<strong>Prestígio:</strong> dá +1 de Hive Mind permanente e 500 Nova Crystals, e esvazia o Scourgedex para recomeçar. Os prêmios dos marcos só vêm na primeira vez.": "<strong>Prestige:</strong> gives a permanent +1 Hive Mind and 500 Nova Crystals, and empties the Scourgedex to start over. Milestone rewards only come the first time.",
+"<strong>Icônicos:</strong> ficam de fora. 112 droids no total, menos 11 icônicos, dá os 101 espaços do livro.": "<strong>Iconic droids:</strong> are left out. 112 droids in total, minus 11 iconic, gives the book's 101 slots.",
+"<strong>Fonte única:</strong> a regra de sexta, os marcos e a regra da fusão vêm de um guia de fã. Confira no jogo.": "<strong>Single source:</strong> the Friday rule, the milestones and the fusion rule come from one fan guide. Check in game.",
+"<strong>Prestígios:</strong> use + e − para acertar o contador quando você já tinha prestigiado antes de usar esta página.": "<strong>Prestiges:</strong> use + and − to fix the counter if you had already prestiged before using this page.",
+"<a href=\"https://droidindex.com/guides/scourgedex\">DroidIndex: guia do Scourgedex</a> <a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusões</a> <a href=\"https://star-wars-droid-tycoon.fandom.com/wiki/Rebirths\">Wiki: Flagelo nos renascimentos</a>": "<a href=\"https://droidindex.com/guides/scourgedex\">DroidIndex: Scourgedex guide</a> <a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusions</a> <a href=\"https://star-wars-droid-tycoon.fandom.com/wiki/Rebirths\">Wiki: Scourge in rebirths</a>",
+"Ao prestigiar, use \"Registrar prestígio\": o livro esvazia e o contador sobe.": "When you prestige, use \"Log prestige\": the book empties and the counter goes up.",
+"Limpar o Scourgedex": "Clear the Scourgedex",
+"As 28 receitas do jogo. Marque um ingrediente quando separar aquela cópia. Marque a fusão como fabricada quando fizer, e use a estrela para deixar as receitas que você mais usa no topo. A fusão consome os três droids e o resultado sai na raridade (Base, Gold…) do ingrediente mais fraco. A fusão libera no renascimento 3, e a ordem dos ingredientes não importa.": "The game's 28 recipes. Check an ingredient when you set that copy aside. Mark the fusion as crafted once you make it, and use the star to keep the recipes you use most at the top. Fusing uses up all three droids and the result comes out at the tier (Base, Gold…) of the weakest ingredient. Fusion unlocks at rebirth 3, and ingredient order doesn't matter.",
+"fusões já fabricadas": "fusions crafted",
+"prontas para fundir": "ready to fuse",
+"receitas favoritas": "favorite recipes",
+"Buscar fusão ou ingrediente": "Search fusion or ingredient",
+"Filtrar por raridade": "Filter by rarity",
+"Todas": "All",
+"Somente ainda não fabricados": "Only not crafted yet",
+"Só favoritas": "Favorites only",
+"Nenhuma fusão com esses filtros.": "No fusions match these filters.",
+"Sobre as receitas": "About the recipes",
+"As 28 receitas batem entre o DroidIndex e o SRB Control. Ion Probe, Quad Sentry, LFT-3R, STRD-3, BI-BIT, TOR-Q, HV-EE, AX-L, MO-TRO, SKM-MR e KL-NK vieram com as atualizações mais recentes.": "All 28 recipes match between DroidIndex and SRB Control. Ion Probe, Quad Sentry, LFT-3R, STRD-3, BI-BIT, TOR-Q, HV-EE, AX-L, MO-TRO, SKM-MR and KL-NK came with the latest updates.",
+"Nomes como os guias escrevem: AXI-POD (com I) e SRV-O (com a letra O).": "Names as the guides spell them: AXI-POD (with an I) and SRV-O (with the letter O).",
+"Nenhuma receita usa outro droid de fusão como ingrediente.": "No recipe uses another fusion droid as an ingredient.",
+"<strong>Ordem:</strong> não importa, nem na fusão normal nem na fusão Flagelo.": "<strong>Order:</strong> doesn't matter, neither in a normal fusion nor in a Scourge fusion.",
+"<strong>Preservação de Fusão:</strong> um droid com essa característica não é consumido pela fusão. É a única exceção à regra de que os três ingredientes somem.": "<strong>Fusion Preservation:</strong> a droid with this trait isn't used up by the fusion. It's the only exception to the rule that all three ingredients are consumed.",
+"<a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusões</a> <a href=\"https://srbcontrol.com/fusion-recipes\">SRB Control: receitas</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: tipos e raridades</a>": "<a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusions</a> <a href=\"https://srbcontrol.com/fusion-recipes\">SRB Control: recipes</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: types and rarities</a>",
+"Backup do progresso": "Progress backup",
+"Gere um código com tudo: inventário, fusões, renascimentos dos 6 ciclos, Scourgedex e preferências. Cole o código em outro aparelho ou navegador para continuar de onde parou.": "Generate a code with everything: inventory, fusions, rebirths for all 6 cycles, Scourgedex and preferences. Paste the code on another device or browser to pick up where you left off.",
+"Copiar código de backup": "Copy backup code",
+"Baixar arquivo de backup": "Download backup file",
+"Abrir arquivo de backup": "Open backup file",
+"Para restaurar, cole o código aqui:": "To restore, paste the code here:",
+"Código de backup (começa com DT1:)": "Backup code (starts with DT1:)",
+"Restaurar este backup": "Restore this backup",
+"Suas marcações são privadas: só a sua conta vê.": "Your progress is private: only your account can see it.",
+"Versão desta ferramenta, não do jogo": "Version of this tool, not of the game",
+"Flagelo": "Scourge",
+"Comum": "Common",
+"Raro": "Rare",
+"Épico": "Epic",
+"Lendário": "Legendary",
+"Mítico": "Mythic",
+"Dobra os Upgrade Chips coletados": "Doubles Upgrade Chips collected",
+"Desbloqueia uma missão Astromech oculta": "Unlocks a hidden Astromech mission",
+"Dobra as recompensas de missões Astromech": "Doubles Astromech mission rewards",
+"+50% de chance de acerto crítico": "+50% critical hit chance",
+"Dobra as recompensas de world quests": "Doubles world quest rewards",
+"Dobra os créditos da venda de droids": "Doubles credits from selling droids",
+"Reduz o tempo de fusão pela metade": "Halves fusion time",
+"Dobra o dano causado": "Doubles damage dealt",
+"Dá um escudo para Blueprints": "Gives Blueprints a shield",
+"Dobra a chance de resultado Flawless": "Doubles the chance of a Flawless result",
+"Dá um bônus de Hive Mind": "Gives a Hive Mind bonus",
+"nenhum chip": "no chips",
+"Duas fontes com a mesma lista: Tycoon Tools e Droidex.": "Two sources with the same list: Tycoon Tools and Droidex.",
+"Duas fontes com a mesma lista: Tycoon Tools e Droidex. Até o nível 27, outros guias confirmam.": "Two sources with the same list: Tycoon Tools and Droidex. Other guides confirm it up to level 27.",
+"Fonte principal: Tycoon Tools. A Dilly cita também HOV-R no nível 7 → 8 (Base) e no 9 → 10 (Gold), e o Droidex ainda não tem este ciclo. Confira no jogo antes de vender.": "Main source: Tycoon Tools. Dilly also lists HOV-R at level 7 → 8 (Base) and 9 → 10 (Gold), and Droidex doesn't have this cycle yet. Check in game before selling.",
+"Sem acesso à sua conta aqui. As marcações ficam só neste navegador.": "No access to your account here. Your progress stays in this browser only.",
+"Salvo neste navegador. Para levar a outro aparelho, use o Backup no fim da página.": "Saved in this browser. To move it to another device, use Backup at the bottom of the page.",
+"Cancelar": "Cancel",
+"Salvando…": "Saving…",
+"Salvo na sua conta.": "Saved to your account.",
+"Não consegui salvar na sua conta. As marcações ficam neste navegador; altere algo de novo para tentar outra vez.": "Couldn't save to your account. Your progress stays in this browser; change something again to retry.",
+"Sua conta ainda não respondeu. Pode marcar: eu salvo quando ela voltar.": "Your account hasn't responded yet. Keep going: it saves when it's back.",
+"Tenho ": "Have ",
+"Ciclo ": "Cycle ",
+"/101 Flagelos": "/101 Scourge",
+"/28 fabricadas": "/28 crafted",
+"Protocolo": "Protocol",
+"Icônico": "Iconic",
+"Fusão · ": "Fusion · ",
+" cópias)": " copies)",
+"Guardar para: ": "Keep for: ",
+"Entra em: ": "Used in: ",
+"Limpar o inventário?": "Clear the inventory?",
+"Isso desmarca todos os droids que você tem, as fusões fabricadas, as favoritas e os ingredientes separados. Renascimentos e Scourgedex não mudam. Não dá para desfazer.": "This unchecks every droid you have, crafted fusions, favorites and set-aside ingredients. Rebirths and the Scourgedex don't change. This can't be undone.",
+"Limpar inventário": "Clear inventory",
+"Favoritas": "Favorites",
+" · marque quando fabricar": " · check when crafted",
+"cópia ": "copy ",
+" de ": " of ",
+"Tirar ": "Remove ",
+"Marcar ": "Mark ",
+" das favoritas": " from favorites",
+" como favorita": " as favorite",
+"Tirar das favoritas": "Remove from favorites",
+"Marcar como favorita": "Mark as favorite",
+"Fabricada. Ingredientes liberados.": "Crafted. Ingredients freed up.",
+"Pronta para fundir": "Ready to fuse",
+" de 3 ingredientes separados": " of 3 ingredients set aside",
+" fabricadas": " crafted",
+"Não tenho": "Don't have",
+"Projeto guardado": "Stored blueprint",
+"Montado, em uso": "Built, in use",
+"Montado, no saguão": "Built, in the lobby",
+"Montado, em bancada ou tanque": "Built, at a bench or tank",
+"Pintura de base Flagelo": "Scourge base paint",
+"Pintura de base Scourge Prime": "Scourge Prime base paint",
+"Livro completo: prestígio na sexta, +1 Hive Mind e 500 Nova Crystals": "Book complete: prestige on Friday, +1 Hive Mind and 500 Nova Crystals",
+"Situação do Flagelo de ": "Scourge status for ",
+"Falta": "Missing",
+"Entregue": "Delivered",
+"Ingrediente que vai em Flagelo na fusão ": "Ingredient that goes in as Scourge in ",
+"Onde está o Flagelo separado para ": "Where is the Scourge set aside for ",
+"Flagelo: não tenho": "Scourge: don't have",
+"Flagelo: ": "Scourge: ",
+"Em Flagelo": "As Scourge",
+"Em Kyber": "At Kyber",
+"Onde está o ": "Where is the ",
+" Kyber da fusão ": " Kyber for ",
+"Kyber: não tenho": "Kyber: don't have",
+"Entregar o ": "Turn in the ",
+" Flagelo?": " Scourge?",
+"A entrega consome o droid. Estas fusões usam o ": "Turning in uses up the droid. These fusions use the ",
+" em Flagelo e ainda não têm uma cópia separada no plano:": " as Scourge and don't have a copy set aside in the plan yet:",
+"Entregar mesmo assim": "Turn in anyway",
+"projeto": "blueprint",
+"em uso": "in use",
+"no saguão": "in the lobby",
+"em bancada ou tanque": "at a bench or tank",
+"Também vai em Flagelo em: ": "Also goes in as Scourge in: ",
+". Precisa de uma cópia para cada, além da entrega.": ". Needs one copy for each, plus the one you turn in.",
+"Pronto": "Ready",
+"faltam para o marco ": "to go for milestone ",
+"livro completo: prestigie na sexta": "book complete: prestige on Friday",
+"Registrar prestígio libera com os 101 entregues. Use + e − para corrigir o contador.": "Log prestige unlocks with all 101 turned in. Use + and − to fix the counter.",
+"Livro completo. Depois de prestigiar no jogo, registre aqui para esvaziar o livro.": "Book complete. After you prestige in game, log it here to empty the book.",
+"Sugestão: ": "Suggested: ",
+" em Flagelo (": " as Scourge (",
+"Sua escolha custa ": "Your pick costs ",
+" a mais que a sugestão.": " more than the suggestion.",
+"vai em Flagelo": "goes in as Scourge",
+" de Base a Kyber": " from Base to Kyber",
+"Nenhum": "None",
+"Economiza ": "Saves ",
+" sobre a pior escolha": " over the worst pick",
+"Fusão Flagelo pronta (": "Scourge fusion ready (",
+"): falta entregar": "): still to turn in",
+"Tudo separado. Monte ": "All set aside. Build ",
+"o projeto": "the blueprint",
+"os ": "the ",
+" projetos": " blueprints",
+" e funda.": " and fuse.",
+"Tudo separado: pode fundir.": "All set aside: ready to fuse.",
+" Flagelo": " Scourge",
+"Falta: ": "Missing: ",
+" fusões a fazer em Flagelo · ": " fusions to make as Scourge · ",
+" prontas para fundir · ": " ready to fuse · ",
+" até os Kyber que faltam": " for the missing Kybers",
+"Registrar prestígio?": "Log prestige?",
+"Use depois de prestigiar no jogo. O Scourgedex desta página esvazia (os Flagelos que estão com você e o plano de fusões continuam) e o contador de prestígios sobe para ": "Use this after you prestige in game. This page's Scourgedex empties (the Scourge droids you have and the fusion plan stay) and the prestige counter goes up to ",
+"Limpar o Scourgedex?": "Clear the Scourgedex?",
+"Isso apaga todas as marcações de Flagelo, o plano de fusões (escolhas, Flagelos e Kyber separados) e zera o contador de prestígios. Não dá para desfazer.": "This erases every Scourge mark, the fusion plan (picks, set-aside Scourge and Kyber droids) and resets the prestige counter. This can't be undone.",
+"Limpar Scourgedex": "Clear Scourgedex",
+"Abrir ciclo ": "Open cycle ",
+" de 40 concluídos": " of 40 done",
+"Renascimentos: Ciclo ": "Rebirths: Cycle ",
+"Resetar ciclo ": "Reset cycle ",
+"Nível ": "Level ",
+" créditos": " credits",
+"Renascimento concluído": "Rebirth done",
+"Pedido aqui": "Asked here",
+"Você tem": "You have",
+"Outros renascimentos": "Other rebirths",
+"Raridade máx.": "Highest tier",
+"Depois deste": "After this one",
+"Raridade que você tem de ": "Tier you have for ",
+"Onde está: não informado": "Where: not set",
+"Ir para o nível ": "Go to level ",
+"Nv ": "Lv ",
+"Só neste": "Only here",
+"Pode vender": "Can sell",
+"Entra em fusão: ": "Used in fusion: ",
+"Manter": "Keep",
+"Volta no nível ": "Needed again at level ",
+", em ": ", at ",
+", no mesmo nível ou menor": ", at the same tier or lower",
+"Projetos para um amigo guardar: Ciclo ": "Blueprints for a friend to hold: Cycle ",
+"Antes do Super Renascimento que leva ao ciclo ": "Before the Super Rebirth that takes you to cycle ",
+", deixe estes projetos com um amigo. Cada um está na raridade mais alta que o ciclo ": ", leave these blueprints with a friend. Each one is at the highest tier that cycle ",
+" pede até o nível ": " asks for up to level ",
+", então cobre todos os pedidos daquele droid. Marque quando entregar.": ", so it covers every request for that droid. Check it off when you hand it over.",
+"1 pedido": "1 request",
+" pedidos": " requests",
+"Marcado como vendido: precisa de outra cópia": "Marked as sold: you need another copy",
+"Concluído": "Done",
+"Raridade certa, mas é projeto: monte para contar": "Right tier, but it's a blueprint: build it to count",
+"Pronto: Flagelo vale para qualquer raridade": "Ready: Scourge counts for any tier",
+"Pronto, se estiver ativado": "Ready, if activated",
+"Falta conseguir": "Still need to get",
+"Falta subir para ": "Needs upgrade to ",
+", depois de conseguir em Base": ", after getting it at Base",
+"Ou uma fusão: ": "Or a fusion: ",
+" (fabricada)": " (crafted)",
+"Chips que faltam: ": "Chips needed: ",
+"Droids prontos": "Droids ready",
+"Próximo · ": "Next · ",
+"1 renascimento concluído oculto.": "1 completed rebirth hidden.",
+" renascimentos concluídos ocultos.": " completed rebirths hidden.",
+"Fim": "Done",
+"próximo renascimento, ": "next rebirth, ",
+"você chegou à meta": "you reached your goal",
+"Nenhum renascimento restante até a sua meta (nível ": "No remaining rebirth up to your goal (level ",
+") pede estes droids. Marque ao vender.": ") asks for these droids. Check them off when you sell.",
+"Nada por enquanto. Um droid aparece aqui quando você conclui o último renascimento que o pede até a sua meta (nível ": "Nothing yet. A droid shows up here once you finish the last rebirth that asks for it up to your goal (level ",
+"Vendido: ": "Sold: ",
+"Resetar o ciclo ": "Reset cycle ",
+"Isso apaga deste ciclo as raridades informadas, onde está cada droid, os renascimentos concluídos, os droids vendidos e os projetos marcados como entregues ao amigo, e a meta volta para o nível 40. Os outros ciclos, o inventário e o Scourgedex não mudam. Não dá para desfazer.": "This erases from this cycle the tiers you entered, where each droid is, completed rebirths, sold droids and blueprints marked as given to your friend, and the goal goes back to level 40. Other cycles, the inventory and the Scourgedex don't change. This can't be undone.",
+"Código copiado. Guarde num lugar seguro ou cole em outro aparelho.": "Code copied. Keep it somewhere safe or paste it on another device.",
+"Código pronto na caixa abaixo. Use Ctrl+C para copiar.": "Code ready in the box below. Press Ctrl+C to copy.",
+"Arquivo de backup gerado.": "Backup file created.",
+"Não deu para baixar aqui. O código está na caixa abaixo.": "Couldn't download here. The code is in the box below.",
+"Arquivo carregado. Confira e toque em Restaurar.": "File loaded. Check it and tap Restore.",
+"Não consegui ler o arquivo.": "Couldn't read the file.",
+"Código inválido. Cole o código inteiro, começando por DT1:, ou abra o arquivo de backup.": "Invalid code. Paste the whole code, starting with DT1:, or open the backup file.",
+"Restaurar este backup?": "Restore this backup?",
+"Isso substitui tudo o que está salvo aqui (inventário, fusões, os 6 ciclos, Scourgedex e preferências) pelo backup de ": "This replaces everything saved here (inventory, fusions, all 6 cycles, Scourgedex and preferences) with the backup from ",
+"data desconhecida": "an unknown date",
+". Não dá para desfazer.": ". This can't be undone.",
+"Restaurar": "Restore",
+"Salvando na sua conta…": "Saving to your account…",
+"Restaurei neste navegador, mas não consegui salvar na conta.": "Restored in this browser, but couldn't save to your account.",
+"Código copiado. Cole na busca de ilhas do Fortnite.": "Code copied. Paste it into Fortnite's island search.",
+"Código selecionado. Use Ctrl+C para copiar.": "Code selected. Press Ctrl+C to copy.",
+"Versão do site: ": "Site version: ",
+"Pré-Beta 14": "Pre-Beta 14",
+"Suas marcações ficam só neste navegador. Ninguém mais vê.": "Your progress stays in this browser only. Nobody else sees it."
+},
+"es": {
+"Versão da ilha no Fortnite para a qual os dados desta página estão atualizados": "Versión de la isla de Fortnite con la que están actualizados los datos de esta página",
+"Atualizado para a ilha": "Actualizado para la isla",
+"Ilha do Fortnite": "Isla de Fortnite",
+"Modo criado por FOAD": "Modo creado por FOAD",
+"Copiar código": "Copiar código",
+"Ver a ilha no site do Fortnite": "Ver la isla en el sitio de Fortnite",
+"<b>Base e créditos</b>Compre projetos (blueprints) na esteira e no Sandcrawler, monte os droids na oficina e deixe que gerem créditos por segundo.": "<b>Base y créditos</b>Compra planos (blueprints) en la cinta y en el Sandcrawler, construye los droids en el taller y deja que generen créditos por segundo.",
+"<b>Raridades</b>Cada droid evolui com chips: Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar e Kyber. Flagelo vale para qualquer pedido.": "<b>Rarezas</b>Cada droid mejora con chips: Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar y Kyber. Scourge sirve para cualquier pedido.",
+"<b>Renascimento</b>Cada nível pede créditos e três droids ativos na base. Gasta os créditos, mantém os droids e dá bônus permanentes.": "<b>Renacimiento</b>Cada nivel pide créditos y tres droids activos en la base. Gasta los créditos, conserva los droids y da bonificaciones permanentes.",
+"<b>Super Renascimento e Flagelo</b>O Super Renascimento libera no nível 12 e leva ao próximo dos 6 ciclos. Às sextas, entregue Flagelos no Scourgedex para prestigiar.": "<b>Súper Renacimiento y Scourge</b>El Súper Renacimiento se desbloquea en el nivel 12 y te lleva al siguiente de los 6 ciclos. Los viernes, entrega droids Scourge en el Scourgedex para hacer prestigio.",
+"Ferramenta de fã, sem ligação com a Epic Games, a Lucasfilm ou a FOAD. Os dados vêm de guias da comunidade e podem mudar com atualizações do jogo.": "Herramienta de fans, sin relación con Epic Games, Lucasfilm ni FOAD. Los datos vienen de guías de la comunidad y pueden cambiar con las actualizaciones del juego.",
+"Seções": "Secciones",
+"Inventário": "Inventario",
+"Renascimentos": "Renacimientos",
+"Controle Flagelo": "Control Scourge",
+"Fusões": "Fusiones",
+"Carregando suas marcações…": "Cargando tu progreso…",
+"Inventário de Droids": "Inventario de droids",
+"Marque os droids que você tem. Quem você tem e entra numa fusão ainda não fabricada aparece com o aviso <strong>Guardar</strong>, para você não vender por engano. As receitas e os ingredientes separados ficam na aba Fusões.": "Marca los droids que tienes. Los que tienes y entran en una fusión aún no fabricada muestran el aviso <strong>Guardar</strong>, para que no los vendas por error. Las recetas y los ingredientes apartados están en la pestaña Fusiones.",
+"droids que você tem": "droids que tienes",
+"droids para guardar (entram em fusão)": "droids para guardar (entran en fusión)",
+"fusões prontas para fundir": "fusiones listas para fusionar",
+"Buscar droid": "Buscar droid",
+"Buscar droid no inventário": "Buscar droid en el inventario",
+"Filtrar por situação": "Filtrar por estado",
+"Todos": "Todos",
+"Faltam": "Faltan",
+"Tenho": "Tengo",
+"Entram em fusão": "Entran en fusión",
+"Filtrar por tipo": "Filtrar por tipo",
+"Todo tipo": "Todo tipo",
+"Não venda estes ainda": "No vendas estos todavía",
+"Você tem estes droids e eles entram em fusões ainda não fabricadas. O número mostra quantas cópias essas fusões consomem. Toque em um nome para localizar o droid.": "Tienes estos droids y entran en fusiones aún no fabricadas. El número indica cuántas copias consumen esas fusiones. Toca un nombre para encontrar el droid.",
+"Nenhum droid com esses filtros. Limpe a busca ou escolha outra situação.": "Ningún droid con estos filtros. Borra la búsqueda o elige otro estado.",
+"Contagem: 69 droids de projeto, 28 de fusão, 4 de protocolo e 11 icônicos.": "Recuento: 69 droids de plano, 28 de fusión, 4 de protocolo y 11 icónicos.",
+"Limpar o inventário": "Borrar el inventario",
+"Renascimentos: Ciclo 2": "Renacimientos: Ciclo 2",
+"Escolha o ciclo e informe a raridade que você tem de cada droid. A página mostra o que falta, os chips necessários, onde o droid volta a ser pedido e se pode ser vendido depois de cada renascimento.": "Elige el ciclo e indica la rareza que tienes de cada droid. La página muestra lo que falta, los chips necesarios, dónde se vuelve a pedir el droid y si puedes venderlo después de cada renacimiento.",
+"Escolher ciclo": "Elegir ciclo",
+"renascimentos concluídos": "renacimientos completados",
+"próximo": "siguiente",
+"droids prontos para o próximo": "droids listos para el siguiente",
+"droids para vender agora": "droids para vender ahora",
+"Buscar droid, como R7": "Buscar droid, como R7",
+"Buscar droid nos renascimentos": "Buscar droid en los renacimientos",
+"Quais renascimentos mostrar": "Qué renacimientos mostrar",
+"Só o próximo": "Solo el siguiente",
+"Ocultar concluídos": "Ocultar completados",
+"Meta: chegar ao": "Meta: llegar al",
+"Resetar ciclo": "Reiniciar ciclo",
+"Pode vender agora": "Puedes vender ahora",
+"Nenhum renascimento para mostrar. Desmarque \"Ocultar concluídos\", limpe a busca ou escolha \"Todos\".": "Ningún renacimiento para mostrar. Desmarca \"Ocultar completados\", borra la búsqueda o elige \"Todos\".",
+"Projetos para um amigo guardar": "Planos para que un amigo guarde",
+"Projeto a guardar": "Plano a guardar",
+"Cobre no próximo ciclo": "Cubre en el próximo ciclo",
+"Valor aprox.": "Valor aprox.",
+"Com o amigo": "Con el amigo",
+"<strong>Como a ordem é feita:</strong> pelo preço aproximado do droid na raridade mais alta que o próximo ciclo pede, que junta a raridade do droid (Mítico custa mais que Comum) e o nível de evolução. Quem é pedido mais vezes ganha um bônus, porque um projeto só cobre todos esses pedidos.": "<strong>Cómo se ordena:</strong> por el precio aproximado del droid en la rareza más alta que pide el próximo ciclo, que combina la rareza del droid (Mítico cuesta más que Común) y su nivel de mejora. Los que se piden más veces reciben un extra, porque un solo plano cubre todos esos pedidos.",
+"<strong>Se tiver um projeto Flagelo</strong> de algum destes droids, guarde esse: Flagelo vale para qualquer pedido. Um projeto Kyber precisa ser ativado depois de montado, o que custa Nova Crystals.": "<strong>Si tienes un plano Scourge</strong> de alguno de estos droids, guarda ese: Scourge sirve para cualquier pedido. Un plano Kyber tiene que activarse después de construirlo, lo que cuesta Nova Crystals.",
+"<strong>Antes de confiar nisso:</strong> não encontrei guia sobre passar projetos para um amigo. A lista assume que o projeto volta para você na raridade em que foi guardado. Os preços vêm do SRB Control e são aproximados para droids que não são Míticos.": "<strong>Antes de confiar en esto:</strong> no encontré ninguna guía sobre pasar planos a un amigo. La lista supone que el plano vuelve a ti en la rareza en que se guardó. Los precios vienen de SRB Control y son aproximados para los droids que no son Míticos.",
+"Regras usadas nos cálculos": "Reglas usadas en los cálculos",
+"<strong>Numeração:</strong> cada cartão segue o jogo e mostra o nível em que você está e o nível que alcança. \"Nível 27 → 28\" é o que a estação pede quando você está no nível 27.": "<strong>Numeración:</strong> cada tarjeta sigue el juego y muestra el nivel en que estás y el nivel que alcanzas. \"Nivel 27 → 28\" es lo que pide la estación cuando estás en el nivel 27.",
+"<strong>Raridade máxima:</strong> é o nível mais alto pedido no ciclo até a sua meta. A ordem é Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar e Kyber, e um nível maior cumpre qualquer pedido menor.": "<strong>Rareza máxima:</strong> el nivel más alto pedido en el ciclo hasta tu meta. El orden es Base, Gold, Diamond, Rainbow, Beskar, Galactic, Stellar y Kyber, y un nivel mayor cumple cualquier pedido menor.",
+"<strong>Renascimento comum:</strong> consome todos os créditos, mas mantém os droids. Os três pedidos precisam estar ativos na base.": "<strong>Renacimiento normal:</strong> consume todos los créditos, pero conserva los droids. Los tres pedidos tienen que estar activos en la base.",
+"<strong>Super Renascimento:</strong> libera a partir do nível 12, apaga droids, créditos e base, e leva ao próximo ciclo. Depois do ciclo 6, volta ao ciclo 1. Por isso a meta muda o que pode ser vendido: o que só voltaria depois dela já não precisa ficar.": "<strong>Súper Renacimiento:</strong> se desbloquea desde el nivel 12, borra droids, créditos y base, y te lleva al siguiente ciclo. Después del ciclo 6 vuelve al ciclo 1. Por eso la meta cambia lo que puedes vender: lo que solo se pediría después de ella ya no tiene que quedarse.",
+"<strong>Antes de vender:</strong> nunca venda um droid Flawless, por causa do desbloqueio permanente no Droidex. Se tiver uma cópia de nível maior, a de nível menor também pode sair.": "<strong>Antes de vender:</strong> nunca vendas un droid Flawless, por el desbloqueo permanente en el Droidex. Si tienes una copia de nivel mayor, la de nivel menor también puede irse.",
+"<strong>Kyber:</strong> só conta para o renascimento depois de ativado.": "<strong>Kyber:</strong> solo cuenta para el renacimiento después de activarlo.",
+"<strong>Onde está:</strong> droid montado conta para o renascimento onde quer que esteja: em uso, no saguão, nas bancadas de produção, na bancada ou no tanque de fusão. Só projeto guardado não conta, porque precisa ser montado antes. Sem essa informação, a página considera que o droid está montado.": "<strong>Dónde está:</strong> un droid construido cuenta para el renacimiento esté donde esté: en uso, en el lobby, en los bancos de producción, en el banco o en el tanque de fusión. Solo un plano guardado no cuenta, porque hay que construirlo antes. Sin esta información, la página considera que el droid está construido.",
+"<strong>Fusões valem pelos ingredientes:</strong> desde a versão 1.38.0, um droid de fusão conta para o pedido de cada um dos seus ingredientes. Um LOW-MO, por exemplo, serve onde o renascimento pede A-LT ou Loadlifter. Cada droid mostra as fusões que valem por ele, e as que você marcou como fabricadas na aba Fusões aparecem em verde. A página não soma a fusão no \"Você tem\": informe a raridade da fusão que vai usar. Ainda não achei confirmação de que a fusão conta na raridade dela, então confira no jogo.": "<strong>Las fusiones valen por sus ingredientes:</strong> desde la versión 1.38.0, un droid de fusión cuenta para el pedido de cada uno de sus ingredientes. Un LOW-MO, por ejemplo, sirve donde el renacimiento pide A-LT o Loadlifter. Cada droid muestra las fusiones que valen por él, y las que marcaste como fabricadas en la pestaña Fusiones aparecen en verde. La página no suma la fusión en \"Tienes\": indica la rareza de la fusión que vas a usar. Aún no confirmé que la fusión cuente en su propia rareza, así que compruébalo en el juego.",
+"<strong>Kyber ativado:</strong> um Kyber só conta depois de ativado no NPC do sorteio de cor do Kyber.": "<strong>Kyber activado:</strong> un Kyber solo cuenta después de activarlo con el NPC del sorteo de color del Kyber.",
+"<strong>Chips:</strong> existe um tipo só de chip. O que muda é o preço de cada passo, que depende da raridade do droid. Quem você ainda não tem conta a partir de Base. Por passo (Base → Gold até Stellar → Kyber), droid Comum: 10, 25, 40, 80, 120, 180, 240; Raro: 30, 60, 100, 250, 400, 750, 1.000; Épico: 120, 180, 240, 2.000, 5.000, 8.000, 12.000; Lendário: 400, 1.200, 2.500, 6.000, 16.000, 24.000, 30.000; Mítico: 4.000, 8.000, 14.000, 30.000, 60.000, 90.000, 110.000. O último passo vem do SRB Control.": "<strong>Chips:</strong> solo hay un tipo de chip. Lo que cambia es el precio de cada paso, que depende de la rareza del droid. Los que aún no tienes se cuentan desde Base. Por paso (Base → Gold hasta Stellar → Kyber), droid Común: 10, 25, 40, 80, 120, 180, 240; Raro: 30, 60, 100, 250, 400, 750, 1.000; Épico: 120, 180, 240, 2.000, 5.000, 8.000, 12.000; Legendario: 400, 1.200, 2.500, 6.000, 16.000, 24.000, 30.000; Mítico: 4.000, 8.000, 14.000, 30.000, 60.000, 90.000, 110.000. El último paso viene de SRB Control.",
+"<strong>Flagelo:</strong> desde a versão 1.36.0, um droid Flagelo vale para qualquer raridade pedida, inclusive Kyber. Nenhum renascimento pede Flagelo, e não dá para evoluir um droid até ele com chips.": "<strong>Scourge:</strong> desde la versión 1.36.0, un droid Scourge sirve para cualquier rareza pedida, incluido Kyber. Ningún renacimiento pide Scourge, y no se puede mejorar un droid hasta él con chips.",
+"<strong>Progresso:</strong> cada ciclo guarda o seu. Resetar um ciclo não mexe nos outros nem no inventário.": "<strong>Progreso:</strong> cada ciclo guarda el suyo. Reiniciar un ciclo no afecta a los demás ni al inventario.",
+"<a href=\"https://tycoon-tools.com/droid-tycoon/rebirth-requirements/\">Tycoon Tools: ciclos 1 a 6</a> <a href=\"https://droidex.nackz.dev/rebirth-requirements/\">Droidex: ciclos 1 a 5</a> <a href=\"https://dillyapp.gg/droidex/rebirths\">Dilly: caminhos 1 a 6</a> <a href=\"https://allthings.how/super-rebirth-guide-for-fortnite-star-wars-droid-tycoon/\">AllThings.How: Super Renascimento</a> <a href=\"https://tycoon-tools.com/droid-tycoon/guide/\">Tycoon Tools: regras</a> <a href=\"https://x.com/FoadZone/status/2113800815844688341\">Notas da versão 1.36.0: Flagelo</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: preços e raridades</a>": "<a href=\"https://tycoon-tools.com/droid-tycoon/rebirth-requirements/\">Tycoon Tools: ciclos 1 a 6</a> <a href=\"https://droidex.nackz.dev/rebirth-requirements/\">Droidex: ciclos 1 a 5</a> <a href=\"https://dillyapp.gg/droidex/rebirths\">Dilly: caminos 1 a 6</a> <a href=\"https://allthings.how/super-rebirth-guide-for-fortnite-star-wars-droid-tycoon/\">AllThings.How: Súper Renacimiento</a> <a href=\"https://tycoon-tools.com/droid-tycoon/guide/\">Tycoon Tools: reglas</a> <a href=\"https://x.com/FoadZone/status/2113800815844688341\">Notas de la versión 1.36.0: Scourge</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: precios y rarezas</a>",
+"Controle Flagelo: Scourgedex": "Control Scourge: Scourgedex",
+"O Scourgedex pede a versão Flagelo dos 101 droids que não são icônicos. Para cada um, marque onde está o seu Flagelo (projeto guardado, montado em uso ou no saguão) ou se já entregou. A entrega consome o droid. Com o livro cheio, visite o Scourge numa sexta-feira para prestigiar.": "El Scourgedex pide la versión Scourge de los 101 droids que no son icónicos. Para cada uno, marca dónde está tu Scourge (plano guardado, construido en uso o en el lobby) o si ya lo entregaste. La entrega consume el droid. Con el libro lleno, visita al Scourge un viernes para hacer prestigio.",
+"Flagelos entregues": "Scourge entregados",
+"Flagelos com você, ainda não entregues": "Scourge que tienes, aún sin entregar",
+"próximo marco": "próximo hito",
+"prestígios feitos (Hive Mind +1 cada)": "prestigios hechos (Hive Mind +1 cada uno)",
+"Marcos do Scourgedex": "Hitos del Scourgedex",
+"Prestígios feitos:": "Prestigios hechos:",
+"Diminuir prestígios": "Restar prestigios",
+"Aumentar prestígios": "Sumar prestigios",
+"Registrar prestígio": "Registrar prestigio",
+"Fusões em Flagelo: plano mais barato": "Fusiones Scourge: plan más barato",
+"Uma fusão sai Flagelo com <strong>um ingrediente Flagelo e os outros dois em Kyber</strong>, em qualquer ordem. Assim, você não precisa conseguir os três ingredientes em Flagelo, e a escolha de qual vai em Flagelo muda muito o custo em chips.": "Una fusión sale Scourge con <strong>un ingrediente Scourge y los otros dos en Kyber</strong>, en cualquier orden. Así no necesitas los tres ingredientes en Scourge, y la elección de cuál va en Scourge cambia mucho el costo en chips.",
+"<strong>Marque os Kyber que você já tem.</strong> Eles deixam de custar chips, e o plano passa a sugerir em Flagelo o ingrediente restante mais fácil de achar. Com um Loadlifter Kyber pronto, por exemplo, o LOW-MO pede só um A-LT Flagelo e um A-LT Kyber.": "<strong>Marca los Kyber que ya tienes.</strong> Dejan de costar chips, y el plan sugiere en Scourge el ingrediente restante más fácil de encontrar. Con un Loadlifter Kyber listo, por ejemplo, el LOW-MO solo pide un A-LT Scourge y un A-LT Kyber.",
+"<strong>Sem Kyber nenhum, o Flagelo vai no ingrediente mais caro de levar a Kyber.</strong> No LOW-MO, um Loadlifter Flagelo deixa os dois A-LT para subir: 5.180 chips, contra mais de 318 mil no caminho contrário.": "<strong>Sin ningún Kyber, el Scourge va en el ingrediente más caro de llevar a Kyber.</strong> En el LOW-MO, un Loadlifter Scourge deja los dos A-LT para mejorar: 5.180 chips, contra más de 318.000 al revés.",
+"<strong>Você escolhe.</strong> Em cada fusão dá para trocar o ingrediente que vai em Flagelo. A página mostra quantos chips a escolha custa.": "<strong>Tú eliges.</strong> En cada fusión puedes cambiar el ingrediente que va en Scourge. La página muestra cuántos chips cuesta la elección.",
+"<strong>Entregar consome o droid.</strong> O Flagelo que vai na fusão precisa ser outra cópia, além da que você entrega no espaço dele no Scourgedex.": "<strong>Entregar consume el droid.</strong> El Scourge que va en la fusión tiene que ser otra copia, además de la que entregas en su espacio del Scourgedex.",
+"<strong>Fusão rende em dobro:</strong> a fusão Flagelo preenche o espaço dela no Scourgedex gastando um Flagelo só, em vez de três.": "<strong>La fusión rinde el doble:</strong> la fusión Scourge llena su espacio en el Scourgedex gastando un solo Scourge, en lugar de tres.",
+"Sugestões por fusão": "Sugerencias por fusión",
+"Fusão": "Fusión",
+"Ingrediente em Flagelo": "Ingrediente en Scourge",
+"Ingredientes em Kyber": "Ingredientes en Kyber",
+"Chips que faltam": "Chips que faltan",
+"Situação": "Estado",
+"Todas as fusões já foram entregues em Flagelo.": "Todas las fusiones ya se entregaron en Scourge.",
+"<strong>Onde está:</strong> projeto guardado precisa ser montado antes de fundir. Droid montado pode estar em uso, no saguão, nas bancadas de produção ou na bancada ou tanque de fusão.": "<strong>Dónde está:</strong> un plano guardado tiene que construirse antes de fusionar. Un droid construido puede estar en uso, en el lobby, en los bancos de producción o en el banco o tanque de fusión.",
+"<strong>Chips:</strong> contados de Base até Kyber para cada Kyber que você ainda não tem. Se você já tem o droid em raridade maior, o custo real é menor. Um Kyber ainda precisa ser ativado.": "<strong>Chips:</strong> contados de Base a Kyber para cada Kyber que aún no tienes. Si ya tienes el droid en una rareza mayor, el costo real es menor. Un Kyber todavía tiene que activarse.",
+"<strong>Divergência:</strong> um guia aceita Stellar no lugar de Kyber nos dois outros slots. Se funcionar no jogo, o custo cai.": "<strong>Discrepancia:</strong> una guía acepta Stellar en lugar de Kyber en los otros dos espacios. Si funciona en el juego, el costo baja.",
+"<strong>KL-NK:</strong> usa dois PZ, que é protocolo. Protocolo não vira Flagelo com chips, só sai Flagelo da caixa do Scourge. Confira se PZ chega a Kyber com chips.": "<strong>KL-NK:</strong> usa dos PZ, que es de protocolo. Los de protocolo no se vuelven Scourge con chips; solo salen Scourge de la caja del Scourge. Comprueba si PZ llega a Kyber con chips.",
+"Buscar droid no Scourgedex": "Buscar droid en el Scourgedex",
+"Com você": "Contigo",
+"Entregues": "Entregados",
+"Nenhum droid com esses filtros.": "Ningún droid con estos filtros.",
+"Como o Scourgedex funciona": "Cómo funciona el Scourgedex",
+"<strong>Como conseguir Flagelos:</strong> na esteira às sextas, em caixas do Scourge das missões (nível de renascimento maior dá droids melhores) e por fusão. Protocolo em Flagelo só sai da caixa.": "<strong>Cómo conseguir Scourge:</strong> en la cinta los viernes, en cajas del Scourge de las misiones (un nivel de renacimiento mayor da mejores droids) y por fusión. Los de protocolo en Scourge solo salen de la caja.",
+"<strong>Entrega:</strong> consome o droid e pode ser feita em qualquer dia. O prestígio só acontece numa sexta-feira, com o livro cheio, falando com o Scourge nos arredores do mapa.": "<strong>Entrega:</strong> consume el droid y se puede hacer cualquier día. El prestigio solo ocurre un viernes, con el libro lleno, hablando con el Scourge en las afueras del mapa.",
+"<strong>Prestígio:</strong> dá +1 de Hive Mind permanente e 500 Nova Crystals, e esvazia o Scourgedex para recomeçar. Os prêmios dos marcos só vêm na primeira vez.": "<strong>Prestigio:</strong> da +1 de Hive Mind permanente y 500 Nova Crystals, y vacía el Scourgedex para empezar de nuevo. Los premios de los hitos solo llegan la primera vez.",
+"<strong>Icônicos:</strong> ficam de fora. 112 droids no total, menos 11 icônicos, dá os 101 espaços do livro.": "<strong>Icónicos:</strong> quedan fuera. 112 droids en total, menos 11 icónicos, dan los 101 espacios del libro.",
+"<strong>Fonte única:</strong> a regra de sexta, os marcos e a regra da fusão vêm de um guia de fã. Confira no jogo.": "<strong>Fuente única:</strong> la regla del viernes, los hitos y la regla de la fusión vienen de una guía de fans. Compruébalo en el juego.",
+"<strong>Prestígios:</strong> use + e − para acertar o contador quando você já tinha prestigiado antes de usar esta página.": "<strong>Prestigios:</strong> usa + y − para ajustar el contador si ya habías hecho prestigio antes de usar esta página.",
+"<a href=\"https://droidindex.com/guides/scourgedex\">DroidIndex: guia do Scourgedex</a> <a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusões</a> <a href=\"https://star-wars-droid-tycoon.fandom.com/wiki/Rebirths\">Wiki: Flagelo nos renascimentos</a>": "<a href=\"https://droidindex.com/guides/scourgedex\">DroidIndex: guía del Scourgedex</a> <a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusiones</a> <a href=\"https://star-wars-droid-tycoon.fandom.com/wiki/Rebirths\">Wiki: Scourge en los renacimientos</a>",
+"Ao prestigiar, use \"Registrar prestígio\": o livro esvazia e o contador sobe.": "Al hacer prestigio, usa \"Registrar prestigio\": el libro se vacía y el contador sube.",
+"Limpar o Scourgedex": "Borrar el Scourgedex",
+"As 28 receitas do jogo. Marque um ingrediente quando separar aquela cópia. Marque a fusão como fabricada quando fizer, e use a estrela para deixar as receitas que você mais usa no topo. A fusão consome os três droids e o resultado sai na raridade (Base, Gold…) do ingrediente mais fraco. A fusão libera no renascimento 3, e a ordem dos ingredientes não importa.": "Las 28 recetas del juego. Marca un ingrediente cuando apartes esa copia. Marca la fusión como fabricada cuando la hagas, y usa la estrella para dejar arriba las recetas que más usas. La fusión consume los tres droids y el resultado sale en la rareza (Base, Gold…) del ingrediente más débil. La fusión se desbloquea en el renacimiento 3, y el orden de los ingredientes no importa.",
+"fusões já fabricadas": "fusiones ya fabricadas",
+"prontas para fundir": "listas para fusionar",
+"receitas favoritas": "recetas favoritas",
+"Buscar fusão ou ingrediente": "Buscar fusión o ingrediente",
+"Filtrar por raridade": "Filtrar por rareza",
+"Todas": "Todas",
+"Somente ainda não fabricados": "Solo las aún no fabricadas",
+"Só favoritas": "Solo favoritas",
+"Nenhuma fusão com esses filtros.": "Ninguna fusión con estos filtros.",
+"Sobre as receitas": "Sobre las recetas",
+"As 28 receitas batem entre o DroidIndex e o SRB Control. Ion Probe, Quad Sentry, LFT-3R, STRD-3, BI-BIT, TOR-Q, HV-EE, AX-L, MO-TRO, SKM-MR e KL-NK vieram com as atualizações mais recentes.": "Las 28 recetas coinciden entre DroidIndex y SRB Control. Ion Probe, Quad Sentry, LFT-3R, STRD-3, BI-BIT, TOR-Q, HV-EE, AX-L, MO-TRO, SKM-MR y KL-NK llegaron con las actualizaciones más recientes.",
+"Nomes como os guias escrevem: AXI-POD (com I) e SRV-O (com a letra O).": "Nombres como los escriben las guías: AXI-POD (con I) y SRV-O (con la letra O).",
+"Nenhuma receita usa outro droid de fusão como ingrediente.": "Ninguna receta usa otro droid de fusión como ingrediente.",
+"<strong>Ordem:</strong> não importa, nem na fusão normal nem na fusão Flagelo.": "<strong>Orden:</strong> no importa, ni en la fusión normal ni en la fusión Scourge.",
+"<strong>Preservação de Fusão:</strong> um droid com essa característica não é consumido pela fusão. É a única exceção à regra de que os três ingredientes somem.": "<strong>Preservación de Fusión:</strong> un droid con esta característica no se consume en la fusión. Es la única excepción a la regla de que los tres ingredientes desaparecen.",
+"<a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusões</a> <a href=\"https://srbcontrol.com/fusion-recipes\">SRB Control: receitas</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: tipos e raridades</a>": "<a href=\"https://droidindex.com/guides/fusion\">DroidIndex: fusiones</a> <a href=\"https://srbcontrol.com/fusion-recipes\">SRB Control: recetas</a> <a href=\"https://srbcontrol.com/droids\">SRB Control: tipos y rarezas</a>",
+"Backup do progresso": "Copia de seguridad del progreso",
+"Gere um código com tudo: inventário, fusões, renascimentos dos 6 ciclos, Scourgedex e preferências. Cole o código em outro aparelho ou navegador para continuar de onde parou.": "Genera un código con todo: inventario, fusiones, renacimientos de los 6 ciclos, Scourgedex y preferencias. Pega el código en otro dispositivo o navegador para seguir donde lo dejaste.",
+"Copiar código de backup": "Copiar código de respaldo",
+"Baixar arquivo de backup": "Descargar archivo de respaldo",
+"Abrir arquivo de backup": "Abrir archivo de respaldo",
+"Para restaurar, cole o código aqui:": "Para restaurar, pega el código aquí:",
+"Código de backup (começa com DT1:)": "Código de respaldo (empieza con DT1:)",
+"Restaurar este backup": "Restaurar esta copia",
+"Suas marcações são privadas: só a sua conta vê.": "Tu progreso es privado: solo tu cuenta lo ve.",
+"Versão desta ferramenta, não do jogo": "Versión de esta herramienta, no del juego",
+"Flagelo": "Scourge",
+"Comum": "Común",
+"Raro": "Raro",
+"Épico": "Épico",
+"Lendário": "Legendario",
+"Mítico": "Mítico",
+"Dobra os Upgrade Chips coletados": "Duplica los Upgrade Chips recogidos",
+"Desbloqueia uma missão Astromech oculta": "Desbloquea una misión Astromech oculta",
+"Dobra as recompensas de missões Astromech": "Duplica las recompensas de misiones Astromech",
+"+50% de chance de acerto crítico": "+50% de probabilidad de golpe crítico",
+"Dobra as recompensas de world quests": "Duplica las recompensas de world quests",
+"Dobra os créditos da venda de droids": "Duplica los créditos por vender droids",
+"Reduz o tempo de fusão pela metade": "Reduce el tiempo de fusión a la mitad",
+"Dobra o dano causado": "Duplica el daño causado",
+"Dá um escudo para Blueprints": "Da un escudo a los Blueprints",
+"Dobra a chance de resultado Flawless": "Duplica la probabilidad de un resultado Flawless",
+"Dá um bônus de Hive Mind": "Da una bonificación de Hive Mind",
+"nenhum chip": "ningún chip",
+"Duas fontes com a mesma lista: Tycoon Tools e Droidex.": "Dos fuentes con la misma lista: Tycoon Tools y Droidex.",
+"Duas fontes com a mesma lista: Tycoon Tools e Droidex. Até o nível 27, outros guias confirmam.": "Dos fuentes con la misma lista: Tycoon Tools y Droidex. Hasta el nivel 27, otras guías lo confirman.",
+"Fonte principal: Tycoon Tools. A Dilly cita também HOV-R no nível 7 → 8 (Base) e no 9 → 10 (Gold), e o Droidex ainda não tem este ciclo. Confira no jogo antes de vender.": "Fuente principal: Tycoon Tools. Dilly también menciona HOV-R en el nivel 7 → 8 (Base) y en el 9 → 10 (Gold), y Droidex aún no tiene este ciclo. Compruébalo en el juego antes de vender.",
+"Sem acesso à sua conta aqui. As marcações ficam só neste navegador.": "Sin acceso a tu cuenta aquí. El progreso queda solo en este navegador.",
+"Salvo neste navegador. Para levar a outro aparelho, use o Backup no fim da página.": "Guardado en este navegador. Para llevarlo a otro dispositivo, usa la copia de seguridad al final de la página.",
+"Cancelar": "Cancelar",
+"Salvando…": "Guardando…",
+"Salvo na sua conta.": "Guardado en tu cuenta.",
+"Não consegui salvar na sua conta. As marcações ficam neste navegador; altere algo de novo para tentar outra vez.": "No pude guardar en tu cuenta. El progreso queda en este navegador; cambia algo de nuevo para reintentar.",
+"Sua conta ainda não respondeu. Pode marcar: eu salvo quando ela voltar.": "Tu cuenta aún no responde. Puedes seguir marcando: se guarda cuando vuelva.",
+"Tenho ": "Tengo ",
+"Ciclo ": "Ciclo ",
+"/101 Flagelos": "/101 Scourge",
+"/28 fabricadas": "/28 fabricadas",
+"Protocolo": "Protocolo",
+"Icônico": "Icónico",
+"Fusão · ": "Fusión · ",
+" cópias)": " copias)",
+"Guardar para: ": "Guardar para: ",
+"Entra em: ": "Entra en: ",
+"Limpar o inventário?": "¿Borrar el inventario?",
+"Isso desmarca todos os droids que você tem, as fusões fabricadas, as favoritas e os ingredientes separados. Renascimentos e Scourgedex não mudam. Não dá para desfazer.": "Esto desmarca todos los droids que tienes, las fusiones fabricadas, las favoritas y los ingredientes apartados. Los renacimientos y el Scourgedex no cambian. No se puede deshacer.",
+"Limpar inventário": "Borrar inventario",
+"Favoritas": "Favoritas",
+" · marque quando fabricar": " · márcala al fabricarla",
+"cópia ": "copia ",
+" de ": " de ",
+"Tirar ": "Quitar ",
+"Marcar ": "Marcar ",
+" das favoritas": " de favoritas",
+" como favorita": " como favorita",
+"Tirar das favoritas": "Quitar de favoritas",
+"Marcar como favorita": "Marcar como favorita",
+"Fabricada. Ingredientes liberados.": "Fabricada. Ingredientes liberados.",
+"Pronta para fundir": "Lista para fusionar",
+" de 3 ingredientes separados": " de 3 ingredientes apartados",
+" fabricadas": " fabricadas",
+"Não tenho": "No tengo",
+"Projeto guardado": "Plano guardado",
+"Montado, em uso": "Construido, en uso",
+"Montado, no saguão": "Construido, en el lobby",
+"Montado, em bancada ou tanque": "Construido, en banco o tanque",
+"Pintura de base Flagelo": "Pintura de base Scourge",
+"Pintura de base Scourge Prime": "Pintura de base Scourge Prime",
+"Livro completo: prestígio na sexta, +1 Hive Mind e 500 Nova Crystals": "Libro completo: prestigio el viernes, +1 Hive Mind y 500 Nova Crystals",
+"Situação do Flagelo de ": "Estado del Scourge de ",
+"Falta": "Falta",
+"Entregue": "Entregado",
+"Ingrediente que vai em Flagelo na fusão ": "Ingrediente que va en Scourge en la fusión ",
+"Onde está o Flagelo separado para ": "Dónde está el Scourge apartado para ",
+"Flagelo: não tenho": "Scourge: no tengo",
+"Flagelo: ": "Scourge: ",
+"Em Flagelo": "En Scourge",
+"Em Kyber": "En Kyber",
+"Onde está o ": "Dónde está el ",
+" Kyber da fusão ": " Kyber de la fusión ",
+"Kyber: não tenho": "Kyber: no tengo",
+"Entregar o ": "¿Entregar el ",
+" Flagelo?": " Scourge?",
+"A entrega consome o droid. Estas fusões usam o ": "La entrega consume el droid. Estas fusiones usan el ",
+" em Flagelo e ainda não têm uma cópia separada no plano:": " en Scourge y aún no tienen una copia apartada en el plan:",
+"Entregar mesmo assim": "Entregar de todos modos",
+"projeto": "plano",
+"em uso": "en uso",
+"no saguão": "en el lobby",
+"em bancada ou tanque": "en banco o tanque",
+"Também vai em Flagelo em: ": "También va en Scourge en: ",
+". Precisa de uma cópia para cada, além da entrega.": ". Necesita una copia para cada una, además de la entrega.",
+"Pronto": "Listo",
+"faltam para o marco ": "faltan para el hito ",
+"livro completo: prestigie na sexta": "libro completo: haz prestigio el viernes",
+"Registrar prestígio libera com os 101 entregues. Use + e − para corrigir o contador.": "Registrar prestigio se habilita con los 101 entregados. Usa + y − para corregir el contador.",
+"Livro completo. Depois de prestigiar no jogo, registre aqui para esvaziar o livro.": "Libro completo. Después de hacer prestigio en el juego, regístralo aquí para vaciar el libro.",
+"Sugestão: ": "Sugerencia: ",
+" em Flagelo (": " en Scourge (",
+"Sua escolha custa ": "Tu elección cuesta ",
+" a mais que a sugestão.": " más que la sugerencia.",
+"vai em Flagelo": "va en Scourge",
+" de Base a Kyber": " de Base a Kyber",
+"Nenhum": "Ninguno",
+"Economiza ": "Ahorra ",
+" sobre a pior escolha": " frente a la peor elección",
+"Fusão Flagelo pronta (": "Fusión Scourge lista (",
+"): falta entregar": "): falta entregar",
+"Tudo separado. Monte ": "Todo apartado. Construye ",
+"o projeto": "el plano",
+"os ": "los ",
+" projetos": " planos",
+" e funda.": " y fusiona.",
+"Tudo separado: pode fundir.": "Todo apartado: puedes fusionar.",
+" Flagelo": " Scourge",
+"Falta: ": "Falta: ",
+" fusões a fazer em Flagelo · ": " fusiones por hacer en Scourge · ",
+" prontas para fundir · ": " listas para fusionar · ",
+" até os Kyber que faltam": " para los Kyber que faltan",
+"Registrar prestígio?": "¿Registrar prestigio?",
+"Use depois de prestigiar no jogo. O Scourgedex desta página esvazia (os Flagelos que estão com você e o plano de fusões continuam) e o contador de prestígios sobe para ": "Úsalo después de hacer prestigio en el juego. El Scourgedex de esta página se vacía (los Scourge que tienes y el plan de fusiones se mantienen) y el contador de prestigios sube a ",
+"Limpar o Scourgedex?": "¿Borrar el Scourgedex?",
+"Isso apaga todas as marcações de Flagelo, o plano de fusões (escolhas, Flagelos e Kyber separados) e zera o contador de prestígios. Não dá para desfazer.": "Esto borra todas las marcas de Scourge, el plan de fusiones (elecciones, Scourge y Kyber apartados) y pone a cero el contador de prestigios. No se puede deshacer.",
+"Limpar Scourgedex": "Borrar Scourgedex",
+"Abrir ciclo ": "Abrir ciclo ",
+" de 40 concluídos": " de 40 completados",
+"Renascimentos: Ciclo ": "Renacimientos: Ciclo ",
+"Resetar ciclo ": "Reiniciar ciclo ",
+"Nível ": "Nivel ",
+" créditos": " créditos",
+"Renascimento concluído": "Renacimiento completado",
+"Pedido aqui": "Pedido aquí",
+"Você tem": "Tienes",
+"Outros renascimentos": "Otros renacimientos",
+"Raridade máx.": "Rareza máx.",
+"Depois deste": "Después de este",
+"Raridade que você tem de ": "Rareza que tienes de ",
+"Onde está: não informado": "Dónde está: sin indicar",
+"Ir para o nível ": "Ir al nivel ",
+"Nv ": "Nv ",
+"Só neste": "Solo en este",
+"Pode vender": "Puedes vender",
+"Entra em fusão: ": "Entra en fusión: ",
+"Manter": "Conservar",
+"Volta no nível ": "Vuelve en el nivel ",
+", em ": ", en ",
+", no mesmo nível ou menor": ", en la misma rareza o menor",
+"Projetos para um amigo guardar: Ciclo ": "Planos para que un amigo guarde: Ciclo ",
+"Antes do Super Renascimento que leva ao ciclo ": "Antes del Súper Renacimiento que lleva al ciclo ",
+", deixe estes projetos com um amigo. Cada um está na raridade mais alta que o ciclo ": ", deja estos planos con un amigo. Cada uno está en la rareza más alta que el ciclo ",
+" pede até o nível ": " pide hasta el nivel ",
+", então cobre todos os pedidos daquele droid. Marque quando entregar.": ", así que cubre todos los pedidos de ese droid. Márcalo cuando lo entregues.",
+"1 pedido": "1 pedido",
+" pedidos": " pedidos",
+"Marcado como vendido: precisa de outra cópia": "Marcado como vendido: necesitas otra copia",
+"Concluído": "Completado",
+"Raridade certa, mas é projeto: monte para contar": "Rareza correcta, pero es un plano: constrúyelo para que cuente",
+"Pronto: Flagelo vale para qualquer raridade": "Listo: Scourge sirve para cualquier rareza",
+"Pronto, se estiver ativado": "Listo, si está activado",
+"Falta conseguir": "Falta conseguirlo",
+"Falta subir para ": "Falta subir a ",
+", depois de conseguir em Base": ", después de conseguirlo en Base",
+"Ou uma fusão: ": "O una fusión: ",
+" (fabricada)": " (fabricada)",
+"Chips que faltam: ": "Chips que faltan: ",
+"Droids prontos": "Droids listos",
+"Próximo · ": "Siguiente · ",
+"1 renascimento concluído oculto.": "1 renacimiento completado oculto.",
+" renascimentos concluídos ocultos.": " renacimientos completados ocultos.",
+"Fim": "Fin",
+"próximo renascimento, ": "próximo renacimiento, ",
+"você chegou à meta": "llegaste a tu meta",
+"Nenhum renascimento restante até a sua meta (nível ": "Ningún renacimiento restante hasta tu meta (nivel ",
+") pede estes droids. Marque ao vender.": ") pide estos droids. Márcalos al venderlos.",
+"Nada por enquanto. Um droid aparece aqui quando você conclui o último renascimento que o pede até a sua meta (nível ": "Nada por ahora. Un droid aparece aquí cuando completas el último renacimiento que lo pide hasta tu meta (nivel ",
+"Vendido: ": "Vendido: ",
+"Resetar o ciclo ": "¿Reiniciar el ciclo ",
+"Isso apaga deste ciclo as raridades informadas, onde está cada droid, os renascimentos concluídos, os droids vendidos e os projetos marcados como entregues ao amigo, e a meta volta para o nível 40. Os outros ciclos, o inventário e o Scourgedex não mudam. Não dá para desfazer.": "Esto borra de este ciclo las rarezas indicadas, dónde está cada droid, los renacimientos completados, los droids vendidos y los planos marcados como entregados al amigo, y la meta vuelve al nivel 40. Los otros ciclos, el inventario y el Scourgedex no cambian. No se puede deshacer.",
+"Código copiado. Guarde num lugar seguro ou cole em outro aparelho.": "Código copiado. Guárdalo en un lugar seguro o pégalo en otro dispositivo.",
+"Código pronto na caixa abaixo. Use Ctrl+C para copiar.": "Código listo en la caja de abajo. Usa Ctrl+C para copiar.",
+"Arquivo de backup gerado.": "Archivo de respaldo generado.",
+"Não deu para baixar aqui. O código está na caixa abaixo.": "No se pudo descargar aquí. El código está en la caja de abajo.",
+"Arquivo carregado. Confira e toque em Restaurar.": "Archivo cargado. Revísalo y toca Restaurar.",
+"Não consegui ler o arquivo.": "No pude leer el archivo.",
+"Código inválido. Cole o código inteiro, começando por DT1:, ou abra o arquivo de backup.": "Código no válido. Pega el código completo, empezando por DT1:, o abre el archivo de respaldo.",
+"Restaurar este backup?": "¿Restaurar esta copia?",
+"Isso substitui tudo o que está salvo aqui (inventário, fusões, os 6 ciclos, Scourgedex e preferências) pelo backup de ": "Esto reemplaza todo lo guardado aquí (inventario, fusiones, los 6 ciclos, Scourgedex y preferencias) por la copia del ",
+"data desconhecida": "fecha desconocida",
+". Não dá para desfazer.": ". No se puede deshacer.",
+"Restaurar": "Restaurar",
+"Salvando na sua conta…": "Guardando en tu cuenta…",
+"Restaurei neste navegador, mas não consegui salvar na conta.": "Restaurado en este navegador, pero no pude guardar en la cuenta.",
+"Código copiado. Cole na busca de ilhas do Fortnite.": "Código copiado. Pégalo en la búsqueda de islas de Fortnite.",
+"Código selecionado. Use Ctrl+C para copiar.": "Código seleccionado. Usa Ctrl+C para copiar.",
+"Versão do site: ": "Versión del sitio: ",
+"Pré-Beta 14": "Pre-Beta 14",
+"Suas marcações ficam só neste navegador. Ninguém mais vê.": "Tu progreso queda solo en este navegador. Nadie más lo ve."
+}
+};
+const LANGS = { pt: "pt-BR", en: "en-US", es: "es" };
+const LANG = (() => {
+  try { const v = localStorage.getItem("cdt-lang"); if (LANGS[v]) return v; } catch (e) { /* sem armazenamento */ }
+  const nav = (navigator.language || "").toLowerCase();
+  return nav.startsWith("pt") ? "pt" : nav.startsWith("es") ? "es" : "en";
+})();
+const T = pt => (LANG !== "pt" && I18N[LANG][pt] != null) ? I18N[LANG][pt] : pt;
+const cr = v => LANG === "en" ? String(v).replace(",", ".") : v;   // créditos escritos como "2,95M"
+document.documentElement.lang = LANGS[LANG];
+(function translateStatic() {
+  if (LANG === "pt") return;
+  const dict = I18N[LANG], INL = new Set(["STRONG", "B", "EM", "BR", "A", "CODE", "I"]);
+  const clean = x => x.replace(/\s+/g, " ").trim();
+  const walk = el => {
+    if (el.tagName === "SCRIPT" || el.tagName === "STYLE" || el.classList.contains("topbar")) return;
+    for (const a of ["placeholder", "aria-label", "title"]) if (el.hasAttribute(a)) { const k = clean(el.getAttribute(a)); if (dict[k]) el.setAttribute(a, dict[k]); }
+    const kids = [...el.children];
+    if (kids.every(k => INL.has(k.tagName) && !k.id)) { const k = clean(el.innerHTML); if (dict[k]) { el.innerHTML = dict[k]; return; } }
+    for (const n of el.childNodes) if (n.nodeType === 3) { const k = clean(n.textContent); if (k && dict[k]) n.textContent = n.textContent.replace(n.textContent.trim(), dict[k]); }
+    kids.forEach(walk);
+  };
+  walk(document.body);
+  document.querySelectorAll("dialog").forEach(walk);
+})();
 /* ================= Dados ================= */
-const TIERS = ["Base", "Gold", "Diamond", "Rainbow", "Beskar", "Galactic", "Stellar", "Kyber", "Flagelo"];
+const TIERS = ["Base", "Gold", "Diamond", "Rainbow", "Beskar", "Galactic", "Stellar", "Kyber", T("Flagelo")];
 const KYBER = 7, FLAGELO = 8;
-const RARITY_NAMES = ["Comum", "Raro", "Épico", "Lendário", "Mítico"];
+const RARITY_NAMES = [T("Comum"), T("Raro"), T("Épico"), T("Lendário"), T("Mítico")];
 const RCOLOR = ["--r-comum", "--r-raro", "--r-epico", "--r-lendario", "--r-mitico"];
 // Droids de projeto por raridade e tipo.
 const BASE = [
@@ -716,17 +1436,17 @@ const BASE = [
 ];
 const PROTOCOL = [["SA-5", 1], ["LOM", 2], ["PZ", 3], ["TDA", 4]];
 const ICONIC = [
-  ["BB-8", "Astromech", "Dobra os Upgrade Chips coletados"],
-  ["CB-23", "Astromech", "Desbloqueia uma missão Astromech oculta"],
-  ["R2-D2", "Astromech", "Dobra as recompensas de missões Astromech"],
-  ["Chopper", "Astromech", "+50% de chance de acerto crítico"],
-  ["DJ-R3X", "Worker", "Dobra as recompensas de world quests"],
-  ["C-3PO", "Worker", "Dobra os créditos da venda de droids"],
-  ["D-O", "Worker", "Reduz o tempo de fusão pela metade"],
-  ["Mister Bones", "Battle", "Dobra o dano causado"],
-  ["IG-11 Marshal", "Battle", "Dá um escudo para Blueprints"],
-  ["WG-22", "Battle", "Dobra a chance de resultado Flawless"],
-  ["Scourge Prime", "Protocol", "Dá um bônus de Hive Mind"],
+  ["BB-8", "Astromech", T("Dobra os Upgrade Chips coletados")],
+  ["CB-23", "Astromech", T("Desbloqueia uma missão Astromech oculta")],
+  ["R2-D2", "Astromech", T("Dobra as recompensas de missões Astromech")],
+  ["Chopper", "Astromech", T("+50% de chance de acerto crítico")],
+  ["DJ-R3X", "Worker", T("Dobra as recompensas de world quests")],
+  ["C-3PO", "Worker", T("Dobra os créditos da venda de droids")],
+  ["D-O", "Worker", T("Reduz o tempo de fusão pela metade")],
+  ["Mister Bones", "Battle", T("Dobra o dano causado")],
+  ["IG-11 Marshal", "Battle", T("Dá um escudo para Blueprints")],
+  ["WG-22", "Battle", T("Dobra a chance de resultado Flawless")],
+  ["Scourge Prime", "Protocol", T("Dá um bônus de Hive Mind")],
 ];
 // [nome, raridade, tipo, ingredientes]
 const FUSION_LIST = [
@@ -789,8 +1509,8 @@ function chipsNeeded(d, have, need) {   // have -1 = não tem: conta a partir de
   return sum;
 }
 const kyberChips = d => chipsNeeded(d, -1, KYBER);
-const fmtInt = n => n.toLocaleString("pt-BR");
-const chipText = n => n === 0 ? "nenhum chip" : fmtInt(n) + (n === 1 ? " chip" : " chips");
+const fmtInt = n => n.toLocaleString(LANGS[LANG]);
+const chipText = n => n === 0 ? T("nenhum chip") : fmtInt(n) + (n === 1 ? " chip" : " chips");
 function droidValue(d, t) {
   const r = RARITY[d] ?? 2;
   const base = r === 4 && MYTHIC_BASE[d] ? MYTHIC_BASE[d] : BASE_COST[r];
@@ -798,7 +1518,7 @@ function droidValue(d, t) {
 }
 function fmtCredits(v) {
   const units = [[1e15, "Qa"], [1e12, "T"], [1e9, "B"], [1e6, "M"], [1e3, "K"]];
-  for (const [u, s] of units) if (v >= u) { const x = v / u; return (x >= 100 ? Math.round(x) : Math.round(x * 10) / 10).toString().replace(".", ",") + s; }
+  for (const [u, s] of units) if (v >= u) { const x = v / u; return (x >= 100 ? Math.round(x) : Math.round(x * 10) / 10).toString().replace(".", LANG === "en" ? "." : ",") + s; }
   return String(Math.round(v));
 }
 const CREDITS = ["10K", "150K", "975K", "2,95M", "5,35M", "9,85M", "14,5M", "36M", "89M", "220M", "550M", "1,36B", "3,40B", "8,45B", "21B", "52B", "130B", "325B", "810B", "2T", "3T", "4,5T", "6T", "9T", "13,5T", "21T", "32T", "45T", "68T", "100T", "150T", "230T", "345T", "520T", "778T", "1,19Qa", "2,5Qa", "4,5Qa", "8Qa", "15Qa"];
@@ -1046,12 +1766,12 @@ JO9-4MN:7,Cyclo-Grav:7,TRI-TEK:7
 PLNK:7,ECG:7,DRFT-R:7`,
 };
 const CYCLE_NOTES = {
-  1: ["Duas fontes com a mesma lista: Tycoon Tools e Droidex.", false],
-  2: ["Duas fontes com a mesma lista: Tycoon Tools e Droidex. Até o nível 27, outros guias confirmam.", false],
-  3: ["Duas fontes com a mesma lista: Tycoon Tools e Droidex.", false],
-  4: ["Duas fontes com a mesma lista: Tycoon Tools e Droidex.", false],
-  5: ["Duas fontes com a mesma lista: Tycoon Tools e Droidex.", false],
-  6: ["Fonte principal: Tycoon Tools. A Dilly cita também HOV-R no nível 7 → 8 (Base) e no 9 → 10 (Gold), e o Droidex ainda não tem este ciclo. Confira no jogo antes de vender.", true],
+  1: [T("Duas fontes com a mesma lista: Tycoon Tools e Droidex."), false],
+  2: [T("Duas fontes com a mesma lista: Tycoon Tools e Droidex. Até o nível 27, outros guias confirmam."), false],
+  3: [T("Duas fontes com a mesma lista: Tycoon Tools e Droidex."), false],
+  4: [T("Duas fontes com a mesma lista: Tycoon Tools e Droidex."), false],
+  5: [T("Duas fontes com a mesma lista: Tycoon Tools e Droidex."), false],
+  6: [T("Fonte principal: Tycoon Tools. A Dilly cita também HOV-R no nível 7 → 8 (Base) e no 9 → 10 (Gold), e o Droidex ainda não tem este ciclo. Confira no jogo antes de vender."), true],
 };
 const parseCycle = text => text.split("\n").map((line, i) => [CREDITS[i], line.split(",").map(p => { const k = p.lastIndexOf(":"); return [p.slice(0, k), Number(p.slice(k + 1))]; })]);
 
@@ -1081,7 +1801,7 @@ function onSeg(id, fn) { $(id).addEventListener("click", e => { const b = e.targ
 function say(text, bad) { const s = $("save"); s.textContent = text; s.classList.toggle("bad", !!bad); }
 // Fora do Claude (por exemplo, publicada no GitHub Pages), a página salva só no navegador.
 const IN_CLAUDE = !!(window.claude && window.claude.use);
-const localNote = IN_CLAUDE ? "Sem acesso à sua conta aqui. As marcações ficam só neste navegador." : "Salvo neste navegador. Para levar a outro aparelho, use o Backup no fim da página.";
+const localNote = IN_CLAUDE ? T("Sem acesso à sua conta aqui. As marcações ficam só neste navegador.") : T("Salvo neste navegador. Para levar a outro aparelho, use o Backup no fim da página.");
 
 /* ---------- Diálogo ---------- */
 let dlgYes = null, dlgNo = null;
@@ -1090,7 +1810,7 @@ function ask(o, yes, no) {
   $("dlg-text").textContent = o.text;
   const list = $("dlg-list"); list.textContent = ""; list.hidden = !o.list;
   (o.list || []).forEach(i => list.append(el("li", "", i)));
-  $("dlg-yes").textContent = o.yes; $("dlg-no").textContent = o.no || "Cancelar";
+  $("dlg-yes").textContent = o.yes; $("dlg-no").textContent = o.no || T("Cancelar");
   $("dlg-yes").classList.toggle("danger", !!o.danger);
   dlgYes = yes; dlgNo = no || null;
   $("dlg").showModal();
@@ -1113,7 +1833,7 @@ function change(s, fn) {
   if (!s.ref) { say(localNote); return; }
   s.dirty = true;
   if (!s.loaded) return;
-  say("Salvando…");
+  say(T("Salvando…"));
   clearTimeout(s.timer);
   s.timer = setTimeout(() => flush(s), 500);
 }
@@ -1123,11 +1843,11 @@ async function flush(s, retried) {
   try {
     await s.ref.set(JSON.parse(JSON.stringify(s.state)));
     s.writing = false;
-    if (s.dirty) flush(s); else say("Salvo na sua conta.");
+    if (s.dirty) flush(s); else say(T("Salvo na sua conta."));
   } catch (e) {
     s.writing = false; s.dirty = true;
     if (e && e.code === "unavailable" && retried !== true) { setTimeout(() => flush(s, true), 800 + Math.random() * 800); return; }
-    say("Não consegui salvar na sua conta. As marcações ficam neste navegador; altere algo de novo para tentar outra vez.", true);
+    say(T("Não consegui salvar na sua conta. As marcações ficam neste navegador; altere algo de novo para tentar outra vez."), true);
   }
 }
 function leave(s) {
@@ -1140,8 +1860,8 @@ function leave(s) {
 function attach(s) {
   s.ref = conn.db.doc("data/users/" + conn.uid + "/" + s.docId);
   s.loaded = false;
-  say("Carregando suas marcações…");
-  s.slow = setTimeout(() => { if (s.loaded === false) say("Sua conta ainda não respondeu. Pode marcar: eu salvo quando ela voltar.", true); }, 10000);
+  say(T("Carregando suas marcações…"));
+  s.slow = setTimeout(() => { if (s.loaded === false) say(T("Sua conta ainda não respondeu. Pode marcar: eu salvo quando ela voltar."), true); }, 10000);
   s.unsub = s.ref.onSnapshot(snap => {
     if (snap.metadata.hasPendingWrites) return;
     if (s.loaded && (s.writing || s.dirty)) return;
@@ -1159,8 +1879,8 @@ function attach(s) {
       const hadPending = s.pending.length > 0;
       s.pending = [];
       const empty = JSON.stringify(s.state) === JSON.stringify(s.cleanFn(null));
-      if (hadPending || (!snap.exists && !empty)) { say("Salvando…"); flush(s); }
-      else say("Salvo na sua conta.");
+      if (hadPending || (!snap.exists && !empty)) { say(T("Salvando…")); flush(s); }
+      else say(T("Salvo na sua conta."));
       if (s.closed && s.unsub) s.unsub();
     }
   }, () => {
@@ -1203,10 +1923,10 @@ $("tabs").addEventListener("keydown", e => {
 });
 function updateTabCounts() {
   const iv = inv.state;
-  $("tc-inv").textContent = "Tenho " + CATALOG.filter(d => iv.d[d.name]).length + "/" + CATALOG.length;
-  $("tc-ren").textContent = "Ciclo " + cur.cycle + " · " + counts[cur.cycle] + "/40";
-  $("tc-fla").textContent = SCOURGE_LIST.filter(d => sx(d.name) === 2).length + "/101 Flagelos";
-  $("tc-fus").textContent = FUSIONS.filter(f => iv.f[f.name]).length + "/28 fabricadas";
+  $("tc-inv").textContent = T("Tenho ") + CATALOG.filter(d => iv.d[d.name]).length + "/" + CATALOG.length;
+  $("tc-ren").textContent = T("Ciclo ") + cur.cycle + " · " + counts[cur.cycle] + "/40";
+  $("tc-fla").textContent = SCOURGE_LIST.filter(d => sx(d.name) === 2).length + T("/101 Flagelos");
+  $("tc-fus").textContent = FUSIONS.filter(f => iv.f[f.name]).length + T("/28 fabricadas");
 }
 
 /* ================= Inventário ================= */
@@ -1228,15 +1948,15 @@ function invGroup(title, color) {
 function buildInv() {
   const root = $("inv-list");
   const groups = RARITY_NAMES.map((n, r) => [n, RCOLOR[r], CATALOG.filter(d => d.rar === r && (d.kind === "base" || d.kind === "fusion"))]);
-  groups.push(["Protocolo", "--r-protocolo", CATALOG.filter(d => d.kind === "protocol")]);
-  groups.push(["Icônico", "--r-iconico", CATALOG.filter(d => d.kind === "iconic")]);
+  groups.push([T("Protocolo"), "--r-protocolo", CATALOG.filter(d => d.kind === "protocol")]);
+  groups.push([T("Icônico"), "--r-iconico", CATALOG.filter(d => d.kind === "iconic")]);
   for (const [title, color, items] of groups) {
     const g = invGroup(title, color), rows = el("div", "rows");
     for (const item of items) {
       const id = "inv-" + slug(item.name);  // checkbox: tenho este droid
       const row = el("label", "row"); row.htmlFor = id; row.style.setProperty("--c", "var(" + color + ")");
       const input = el("input"); input.type = "checkbox"; input.id = id;
-      const tag = item.kind === "fusion" ? "Fusão · " + item.type : item.kind === "protocol" ? RARITY_NAMES[item.rar] : item.type;
+      const tag = item.kind === "fusion" ? T("Fusão · ") + item.type : item.kind === "protocol" ? RARITY_NAMES[item.rar] : item.type;
       row.append(input, el("span", "name", item.name), el("span", "type", tag));
       if (item.fx) row.append(el("span", "note fx", item.fx));
       if (item.kind === "fusion") row.append(el("span", "note fx", item.items.join(" + ")));
@@ -1258,7 +1978,7 @@ function reservedBy(name) {   // fusões ainda não fabricadas que consomem este
   }
   return out;
 }
-const fmtUses = uses => uses.map(u => u.f + (u.qty > 1 ? " (" + u.qty + " cópias)" : "")).join(", ");
+const fmtUses = uses => uses.map(u => u.f + (u.qty > 1 ? " (" + u.qty + T(" cópias)") : "")).join(", ");
 function setInv(kind, key, on) { change(inv, st => { if (on) st[kind][key] = true; else delete st[kind][key]; }); }
 function onInvToggle(r) { setInv("d", r.item.name, r.input.checked); }
 function slotsGot(f) { return f.items.filter((_, i) => inv.state.s[f.name + ":" + i]).length; }
@@ -1273,7 +1993,7 @@ function updateInv() {
     r.row.classList.toggle("done", on);
     r.row.classList.toggle("risk", on && uses.length > 0);
     r.note.hidden = !uses.length;
-    r.note.textContent = uses.length ? (on ? "Guardar para: " : "Entra em: ") + fmtUses(uses) : "";
+    r.note.textContent = uses.length ? (on ? T("Guardar para: ") : T("Entra em: ")) + fmtUses(uses) : "";
     if (on && uses.length) hold.push({ name: r.item.name, n: uses.reduce((a, u) => a + u.qty, 0) });
     const f = invFilter;
     const statusOk = f.status === "all" || (f.status === "todo" && !on) || (f.status === "done" && on) || (f.status === "hold" && uses.length > 0);
@@ -1310,9 +2030,9 @@ $("inv-q").addEventListener("input", e => { invFilter.q = norm(e.target.value.tr
 onSeg("inv-status", v => { invFilter.status = v; updateInv(); });
 onSeg("inv-type", v => { invFilter.type = v; updateInv(); });
 $("inv-reset").addEventListener("click", () => ask({
-  title: "Limpar o inventário?",
-  text: "Isso desmarca todos os droids que você tem, as fusões fabricadas, as favoritas e os ingredientes separados. Renascimentos e Scourgedex não mudam. Não dá para desfazer.",
-  yes: "Limpar inventário", danger: true,
+  title: T("Limpar o inventário?"),
+  text: T("Isso desmarca todos os droids que você tem, as fusões fabricadas, as favoritas e os ingredientes separados. Renascimentos e Scourgedex não mudam. Não dá para desfazer."),
+  yes: T("Limpar inventário"), danger: true,
 }, () => change(inv, st => { st.d = {}; st.s = {}; st.f = {}; st.fav = {}; })));
 
 /* ================= Fusões ================= */
@@ -1323,7 +2043,7 @@ const fusFilter = { q: "", rar: "all", open: false, fav: false };
 const isFab = name => !!inv.state.f[name];
 function buildFus() {
   const root = $("fus-list");
-  const favG = invGroup("Favoritas", "--scourge"), favGrid = el("div", "fusions");
+  const favG = invGroup(T("Favoritas"), "--scourge"), favGrid = el("div", "fusions");
   favG.node.append(favGrid); root.append(favG.node);
   fusGroups.push({ node: favG.node, count: favG.count, grid: favGrid, rar: null });
   RARITY_NAMES.forEach((title, r) => {
@@ -1338,7 +2058,7 @@ function buildFus() {
     const head = el("div", "fus-head");
     const top = el("label", "fus-top"); top.htmlFor = id;
     const input = el("input"); input.type = "checkbox"; input.id = id;
-    top.append(input, el("span", "fus-name", f.name), el("small", "", f.type + " · " + title + " · marque quando fabricar"));
+    top.append(input, el("span", "fus-name", f.name), el("small", "", f.type + " · " + title + T(" · marque quando fabricar")));
     input.addEventListener("change", () => setInv("f", f.name, input.checked));
     const star = el("button", "star"); star.type = "button";
     star.addEventListener("click", () => { setInv("fav", f.name, !inv.state.fav[f.name]); star.focus(); });
@@ -1352,7 +2072,7 @@ function buildFus() {
       const s = el("label", "slot"); s.htmlFor = sid;
       const cb = el("input"); cb.type = "checkbox"; cb.id = sid;
       const lbl = el("span", "name", ing);
-      if (totals[ing] > 1) lbl.append(el("span", "slot-copy", "cópia " + seen[ing] + " de " + totals[ing]));
+      if (totals[ing] > 1) lbl.append(el("span", "slot-copy", T("cópia ") + seen[ing] + T(" de ") + totals[ing]));
       const rar = RARITY[ing];
       const n = el("span", "note"); n.hidden = true;
       s.append(cb, lbl, el("span", "rar", rar != null ? RARITY_NAMES[rar] : ""), n);
@@ -1373,8 +2093,8 @@ function updateFus() {
     c.input.checked = on;
     c.star.textContent = fav ? "★" : "☆";
     c.star.setAttribute("aria-pressed", String(fav));
-    c.star.setAttribute("aria-label", (fav ? "Tirar " : "Marcar ") + c.f.name + (fav ? " das favoritas" : " como favorita"));
-    c.star.title = fav ? "Tirar das favoritas" : "Marcar como favorita";
+    c.star.setAttribute("aria-label", (fav ? T("Tirar ") : T("Marcar ")) + c.f.name + (fav ? T(" das favoritas") : T(" como favorita")));
+    c.star.title = fav ? T("Tirar das favoritas") : T("Marcar como favorita");
     let got = 0;
     for (const s of c.slots) {
       const has = !!st.s[s.key]; if (has) got++;
@@ -1384,7 +2104,7 @@ function updateFus() {
     const isReady = !on && got === 3; if (isReady) ready++;
     c.card.classList.toggle("ready", isReady);
     c.card.classList.toggle("closed", on);
-    c.foot.textContent = on ? "Fabricada. Ingredientes liberados." : isReady ? "Pronta para fundir" : got + " de 3 ingredientes separados";
+    c.foot.textContent = on ? T("Fabricada. Ingredientes liberados.") : isReady ? T("Pronta para fundir") : got + T(" de 3 ingredientes separados");
     const ff = fusFilter;
     const qOk = !ff.q || norm(c.f.name).includes(ff.q) || c.f.items.some(i => norm(i).includes(ff.q));
     c.card.hidden = !(qOk && (ff.rar === "all" || String(c.f.rar) === ff.rar) && (!ff.open || !on) && (!ff.fav || fav));
@@ -1398,7 +2118,7 @@ function updateFus() {
     g.members.forEach((c, i) => { if (g.grid.children[i] !== c.card) g.grid.insertBefore(c.card, g.grid.children[i] || null); });
     const vis = g.members.some(c => !c.card.hidden);
     g.node.hidden = !vis; any = any || vis;
-    g.count.textContent = g.members.filter(c => isFab(c.f.name)).length + "/" + g.members.length + " fabricadas";
+    g.count.textContent = g.members.filter(c => isFab(c.f.name)).length + "/" + g.members.length + T(" fabricadas");
   }
   $("fus-empty").hidden = any;
   $("fus-done").textContent = FUSIONS.filter(f => isFab(f.name)).length + "/28";
@@ -1414,7 +2134,7 @@ $("fus-onlyfav").addEventListener("change", e => { fusFilter.fav = e.target.chec
 // x[nome]: 1 = projeto guardado; 3 = montado, em uso; 4 = montado, no saguão; 2 = entregue no Scourgedex.
 // pick[fusão]: ingrediente escolhido para ir em Flagelo. fs[fusão]: onde está a cópia Flagelo separada para a fusão.
 // ks["fusão:slot"]: onde está a cópia Kyber daquele ingrediente.
-const LOCS = [[0, "Não tenho"], [1, "Projeto guardado"], [3, "Montado, em uso"], [4, "Montado, no saguão"], [5, "Montado, em bancada ou tanque"]];
+const LOCS = [[0, T("Não tenho")], [1, T("Projeto guardado")], [3, T("Montado, em uso")], [4, T("Montado, no saguão")], [5, T("Montado, em bancada ou tanque")]];
 const isLoc = v => v === 1 || v === 3 || v === 4 || v === 5;
 const sc = makeStore("scourgedex", "scourgedex-v1", o => {
   const x = {}, fs = {}, ks = {}, pick = {};
@@ -1426,7 +2146,7 @@ const sc = makeStore("scourgedex", "scourgedex-v1", o => {
   return { x, fs, ks, pick, prestige: p > 0 ? Math.floor(p) : 0 };
 }, () => { updateFla(); updateFus(); updateTabCounts(); });
 const sx = name => sc.state.x[name] || 0;
-const MARKS = [[25, "200 Nova Crystals"], [45, "Pintura de base Flagelo"], [70, "500 Nova Crystals"], [90, "Pintura de base Scourge Prime"], [101, "Livro completo: prestígio na sexta, +1 Hive Mind e 500 Nova Crystals"]];
+const MARKS = [[25, "200 Nova Crystals"], [45, T("Pintura de base Flagelo")], [70, "500 Nova Crystals"], [90, T("Pintura de base Scourge Prime")], [101, T("Livro completo: prestígio na sexta, +1 Hive Mind e 500 Nova Crystals")]];
 const flaRows = new Map();   // nome -> { item, row, sel, note }
 const flaGroups = [];
 const flaFilter = { q: "", status: "all" };
@@ -1458,15 +2178,15 @@ function scourgePlan() { return FUSIONS.filter(f => sx(f.name) !== 2).map(planFo
 function buildFla() {
   const root = $("fla-list");
   const groups = RARITY_NAMES.map((n, r) => [n, RCOLOR[r], SCOURGE_LIST.filter(d => d.rar === r && d.kind !== "protocol")]);
-  groups.push(["Protocolo", "--r-protocolo", SCOURGE_LIST.filter(d => d.kind === "protocol")]);
+  groups.push([T("Protocolo"), "--r-protocolo", SCOURGE_LIST.filter(d => d.kind === "protocol")]);
   for (const [title, color, items] of groups) {
     const g = invGroup(title, color), rows = el("div", "rows");
     for (const item of items) {
       const row = el("div", "srow"); row.style.setProperty("--c", "var(" + color + ")");
       const left = el("div");
-      left.append(el("span", "name", item.name), document.createTextNode(" "), el("span", "type", item.kind === "fusion" ? "Fusão" : item.kind === "protocol" ? RARITY_NAMES[item.rar] : item.type));
-      const sel = el("select"); sel.setAttribute("aria-label", "Situação do Flagelo de " + item.name);
-      sel.append(new Option("Falta", "0"), new Option("Projeto guardado", "1"), new Option("Montado, em uso", "3"), new Option("Montado, no saguão", "4"), new Option("Montado, em bancada ou tanque", "5"), new Option("Entregue", "2"));
+      left.append(el("span", "name", item.name), document.createTextNode(" "), el("span", "type", item.kind === "fusion" ? T("Fusão") : item.kind === "protocol" ? RARITY_NAMES[item.rar] : item.type));
+      const sel = el("select"); sel.setAttribute("aria-label", T("Situação do Flagelo de ") + item.name);
+      sel.append(new Option(T("Falta"), "0"), new Option(T("Projeto guardado"), "1"), new Option(T("Montado, em uso"), "3"), new Option(T("Montado, no saguão"), "4"), new Option(T("Montado, em bancada ou tanque"), "5"), new Option(T("Entregue"), "2"));
       const note = el("span", "note hold-note"); note.hidden = true;
       row.append(left, sel, note);
       const r = { item, row, sel, note };
@@ -1487,19 +2207,19 @@ function buildFla() {
   for (const f of order) {
     const tr = el("tr");
     const c1 = el("td", "first"); c1.append(el("span", "dname", f.name), el("small", "", RARITY_NAMES[f.rar] + " · " + f.items.join(" + ")));
-    const c2 = el("td"); c2.dataset.label = "Em Flagelo";
+    const c2 = el("td"); c2.dataset.label = T("Em Flagelo");
     const box2 = el("div", "pick");
-    const pick = el("select"); pick.setAttribute("aria-label", "Ingrediente que vai em Flagelo na fusão " + f.name);
+    const pick = el("select"); pick.setAttribute("aria-label", T("Ingrediente que vai em Flagelo na fusão ") + f.name);
     pick.addEventListener("change", () => change(sc, st => { if (pick.value) st.pick[f.name] = pick.value; else delete st.pick[f.name]; }));
-    const fsSel = locSelect("Onde está o Flagelo separado para " + f.name, "Flagelo: não tenho", "Flagelo: ");
+    const fsSel = locSelect(T("Onde está o Flagelo separado para ") + f.name, T("Flagelo: não tenho"), T("Flagelo: "));
     fsSel.addEventListener("change", () => { const v = Number(fsSel.value); change(sc, st => { if (v) st.fs[f.name] = v; else delete st.fs[f.name]; }); });
     const pickNote = el("small");
     box2.append(pick, fsSel, pickNote); c2.append(box2);
-    const c3 = el("td"); c3.dataset.label = "Em Kyber";
+    const c3 = el("td"); c3.dataset.label = T("Em Kyber");
     const kbox = el("div", "kslots"), kslots = [];
     f.items.forEach((d, j) => {
       const box = el("div", "kslot");
-      const sel = locSelect("Onde está o " + d + " Kyber da fusão " + f.name, "Kyber: não tenho", "Kyber: ");
+      const sel = locSelect(T("Onde está o ") + d + T(" Kyber da fusão ") + f.name, T("Kyber: não tenho"), "Kyber: ");
       sel.addEventListener("change", () => { const v = Number(sel.value); change(sc, st => { const k = f.name + ":" + j; if (v) st.ks[k] = v; else delete st.ks[k]; }); });
       const label = el("span", "ky", d), sub = el("small");
       box.append(label, sel, sub); kbox.append(box);
@@ -1509,7 +2229,7 @@ function buildFla() {
     const c4 = el("td"); c4.dataset.label = "Chips";
     const chips = el("span", "ky"), chipsSub = el("small");
     const d4 = el("div"); d4.append(chips, chipsSub); c4.append(d4);
-    const c5 = el("td"); c5.dataset.label = "Situação";
+    const c5 = el("td"); c5.dataset.label = T("Situação");
     const status = el("span"); c5.append(status);
     tr.append(c1, c2, c3, c4, c5); body.append(tr);
     planRows.push({ f, tr, pick, fsSel, kslots, chips, chipsSub, status, pickNote });
@@ -1524,13 +2244,13 @@ function onFlaChange(r) {
   const v = Number(r.sel.value), uses = flaNeeds(r.item.name);
   if (v === 2 && uses.length) {
     r.sel.value = String(sx(r.item.name));
-    ask({ title: "Entregar o " + r.item.name + " Flagelo?", text: "A entrega consome o droid. Estas fusões usam o " + r.item.name + " em Flagelo e ainda não têm uma cópia separada no plano:", list: uses, yes: "Entregar mesmo assim", no: "Cancelar", danger: true },
+    ask({ title: T("Entregar o ") + r.item.name + T(" Flagelo?"), text: T("A entrega consome o droid. Estas fusões usam o ") + r.item.name + T(" em Flagelo e ainda não têm uma cópia separada no plano:"), list: uses, yes: T("Entregar mesmo assim"), no: T("Cancelar"), danger: true },
       () => setSx(r.item.name, 2), () => r.sel.focus());
     return;
   }
   setSx(r.item.name, v);
 }
-const locWord = v => v === 1 ? "projeto" : v === 3 ? "em uso" : v === 4 ? "no saguão" : "em bancada ou tanque";
+const locWord = v => v === 1 ? T("projeto") : v === 3 ? T("em uso") : v === 4 ? T("no saguão") : T("em bancada ou tanque");
 function updateFla() {
   const st = sc.state;
   const plan = scourgePlan();
@@ -1546,7 +2266,7 @@ function updateFla() {
     const res = needs.get(r.item.name);
     r.row.classList.toggle("reserved", !!res);
     r.note.hidden = !res;
-    r.note.textContent = res ? "Também vai em Flagelo em: " + res.join(", ") + ". Precisa de uma cópia para cada, além da entrega." : "";
+    r.note.textContent = res ? T("Também vai em Flagelo em: ") + res.join(", ") + T(". Precisa de uma cópia para cada, além da entrega.") : "";
     const f = flaFilter;
     const stOk = f.status === "all" || (f.status === "todo" && v === 0) || (f.status === "owned" && isLoc(v)) || (f.status === "given" && v === 2);
     r.row.hidden = !(stOk && (!f.q || norm(r.item.name).includes(f.q)));
@@ -1564,15 +2284,15 @@ function updateFla() {
   $("fla-prestige-n").textContent = st.prestige;
   $("fla-prestige-minus").disabled = st.prestige <= 0;
   const nextMark = MARKS.find(m => given < m[0]);
-  $("fla-next").textContent = nextMark ? nextMark[0] - given : "Pronto";
-  $("fla-next-sub").textContent = nextMark ? "faltam para o marco " + nextMark[0] + ": " + nextMark[1] : "livro completo: prestigie na sexta";
+  $("fla-next").textContent = nextMark ? nextMark[0] - given : T("Pronto");
+  $("fla-next-sub").textContent = nextMark ? T("faltam para o marco ") + nextMark[0] + ": " + nextMark[1] : T("livro completo: prestigie na sexta");
   document.querySelectorAll("#fla-marks .mark").forEach(m => {
     const n = Number(m.dataset.n);
     m.classList.toggle("got", given >= n);
     m.classList.toggle("next", nextMark && nextMark[0] === n);
   });
   $("fla-prestige-btn").disabled = given < 101;
-  $("fla-prestige-note").textContent = given < 101 ? "Registrar prestígio libera com os 101 entregues. Use + e − para corrigir o contador." : "Livro completo. Depois de prestigiar no jogo, registre aqui para esvaziar o livro.";
+  $("fla-prestige-note").textContent = given < 101 ? T("Registrar prestígio libera com os 101 entregues. Use + e − para corrigir o contador.") : T("Livro completo. Depois de prestigiar no jogo, registre aqui para esvaziar o livro.");
 
   // Plano de fusões em Flagelo
   const byName = new Map(plan.map(p => [p.f.name, p]));
@@ -1587,14 +2307,14 @@ function updateFla() {
     const sig = p.opts.map(o => o.fl + o.chips).join("|") + "#" + p.auto.fl;
     if (r.pick.dataset.sig !== sig) {
       r.pick.textContent = "";
-      r.pick.append(new Option("Sugestão: " + p.auto.fl + " (" + chipText(p.auto.chips) + ")", ""));
-      for (const o of p.opts) r.pick.append(new Option(o.fl + " em Flagelo (" + chipText(o.chips) + ")", o.fl));
+      r.pick.append(new Option(T("Sugestão: ") + p.auto.fl + " (" + chipText(p.auto.chips) + ")", ""));
+      for (const o of p.opts) r.pick.append(new Option(o.fl + T(" em Flagelo (") + chipText(o.chips) + ")", o.fl));
       r.pick.dataset.sig = sig;
     }
     if (r.pick.value !== want) r.pick.value = want;
     const fsV = st.fs[r.f.name] || 0;
     if (r.fsSel.value !== String(fsV)) r.fsSel.value = String(fsV);
-    r.pickNote.textContent = p.manual && p.use.chips > p.auto.chips ? "Sua escolha custa " + chipText(p.use.chips - p.auto.chips) + " a mais que a sugestão." : "";
+    r.pickNote.textContent = p.manual && p.use.chips > p.auto.chips ? T("Sua escolha custa ") + chipText(p.use.chips - p.auto.chips) + T(" a mais que a sugestão.") : "";
     r.pickNote.hidden = !r.pickNote.textContent;
     // Ingredientes em Kyber
     let kyMissing = [], kyProjects = 0, rowChips = 0;
@@ -1604,37 +2324,37 @@ function updateFla() {
       k.sel.hidden = isFl;
       const v = p.ksOf(k.j);
       if (k.sel.value !== String(v)) k.sel.value = String(v);
-      if (isFl) { k.sub.textContent = "vai em Flagelo"; continue; }
+      if (isFl) { k.sub.textContent = T("vai em Flagelo"); continue; }
       const cost = v ? 0 : kyberChips(k.d);
       rowChips += cost;
       if (!v) kyMissing.push(k.d); else if (v === 1) kyProjects++;
-      k.sub.textContent = v ? "" : chipText(cost) + " de Base a Kyber";
+      k.sub.textContent = v ? "" : chipText(cost) + T(" de Base a Kyber");
     }
     chipTotal += rowChips;
-    r.chips.textContent = rowChips ? chipText(rowChips) : "Nenhum";
+    r.chips.textContent = rowChips ? chipText(rowChips) : T("Nenhum");
     const worst = p.opts.reduce((m, o) => Math.max(m, o.chips), 0);
-    r.chipsSub.textContent = worst > p.use.chips ? "Economiza " + chipText(worst - p.use.chips) + " sobre a pior escolha" : "";
+    r.chipsSub.textContent = worst > p.use.chips ? T("Economiza ") + chipText(worst - p.use.chips) + T(" sobre a pior escolha") : "";
     // Situação
     const fusLoc = sx(r.f.name);
     const projects = kyProjects + (fsV === 1 ? 1 : 0);
     r.status.className = "";
-    if (isLoc(fusLoc)) { r.status.className = "have-it"; r.status.textContent = "Fusão Flagelo pronta (" + locWord(fusLoc) + "): falta entregar"; }
+    if (isLoc(fusLoc)) { r.status.className = "have-it"; r.status.textContent = T("Fusão Flagelo pronta (") + locWord(fusLoc) + T("): falta entregar"); }
     else if (fsV && !kyMissing.length) {
       readyCount++;
       r.status.className = "have-it";
-      r.status.textContent = projects ? "Tudo separado. Monte " + (projects === 1 ? "o projeto" : "os " + projects + " projetos") + " e funda." : "Tudo separado: pode fundir.";
+      r.status.textContent = projects ? T("Tudo separado. Monte ") + (projects === 1 ? T("o projeto") : T("os ") + projects + T(" projetos")) + T(" e funda.") : T("Tudo separado: pode fundir.");
     } else {
       r.status.className = "need-it";
       const miss = [];
-      if (!fsV) miss.push(p.use.fl + " Flagelo");
+      if (!fsV) miss.push(p.use.fl + T(" Flagelo"));
       kyMissing.forEach(d => miss.push(d + " Kyber"));
-      r.status.textContent = "Falta: " + miss.join(", ");
+      r.status.textContent = T("Falta: ") + miss.join(", ");
     }
   }
   $("plan-empty").hidden = open > 0;
   $("plan-sum-sub").textContent = open
-    ? open + " fusões a fazer em Flagelo · " + readyCount + " prontas para fundir · " + chipText(chipTotal) + " até os Kyber que faltam"
-    : "Todas as fusões já foram entregues em Flagelo.";
+    ? open + T(" fusões a fazer em Flagelo · ") + readyCount + T(" prontas para fundir · ") + chipText(chipTotal) + T(" até os Kyber que faltam")
+    : T("Todas as fusões já foram entregues em Flagelo.");
 }
 $("fla-q").addEventListener("input", e => { flaFilter.q = norm(e.target.value.trim()); updateFla(); });
 onSeg("fla-status", v => { flaFilter.status = v; updateFla(); });
@@ -1642,14 +2362,14 @@ $("fla-prestige-plus").addEventListener("click", () => change(sc, st => { st.pre
 $("fla-prestige-minus").addEventListener("click", () => change(sc, st => { st.prestige = Math.max(0, st.prestige - 1); }));
 $("plan").addEventListener("toggle", () => { const o = $("plan").open; if (prefs.planOpen !== o) { prefs.planOpen = o; savePrefs(); } });
 $("fla-prestige-btn").addEventListener("click", () => ask({
-  title: "Registrar prestígio?",
-  text: "Use depois de prestigiar no jogo. O Scourgedex desta página esvazia (os Flagelos que estão com você e o plano de fusões continuam) e o contador de prestígios sobe para " + (sc.state.prestige + 1) + ".",
-  yes: "Registrar prestígio",
+  title: T("Registrar prestígio?"),
+  text: T("Use depois de prestigiar no jogo. O Scourgedex desta página esvazia (os Flagelos que estão com você e o plano de fusões continuam) e o contador de prestígios sobe para ") + (sc.state.prestige + 1) + ".",
+  yes: T("Registrar prestígio"),
 }, () => change(sc, st => { for (const k of Object.keys(st.x)) if (st.x[k] === 2) delete st.x[k]; st.prestige += 1; })));
 $("fla-reset").addEventListener("click", () => ask({
-  title: "Limpar o Scourgedex?",
-  text: "Isso apaga todas as marcações de Flagelo, o plano de fusões (escolhas, Flagelos e Kyber separados) e zera o contador de prestígios. Não dá para desfazer.",
-  yes: "Limpar Scourgedex", danger: true,
+  title: T("Limpar o Scourgedex?"),
+  text: T("Isso apaga todas as marcações de Flagelo, o plano de fusões (escolhas, Flagelos e Kyber separados) e zera o contador de prestígios. Não dá para desfazer."),
+  yes: T("Limpar Scourgedex"), danger: true,
 }, () => change(sc, st => { st.x = {}; st.fs = {}; st.ks = {}; st.pick = {}; st.prestige = 0; })));
 
 /* ================= Renascimentos ================= */
@@ -1697,18 +2417,18 @@ function renderTabs() {
   for (const c of Object.keys(CYCLES)) {
     const b = el("button", "cycle-tab"); b.type = "button";
     b.setAttribute("aria-pressed", String(Number(c) === cur.cycle));
-    b.append(el("b", "", "Ciclo " + c), el("span", "", counts[c] + "/40"));
-    b.setAttribute("aria-label", "Abrir ciclo " + c + ", " + counts[c] + " de 40 concluídos");
+    b.append(el("b", "", T("Ciclo ") + c), el("span", "", counts[c] + "/40"));
+    b.setAttribute("aria-label", T("Abrir ciclo ") + c + ", " + counts[c] + T(" de 40 concluídos"));
     b.addEventListener("click", () => selectCycle(Number(c)));
     box.append(b);
   }
   if (typeof inv !== "undefined") updateTabCounts();
 }
 function renderCycleInfo() {
-  $("title").textContent = "Renascimentos: Ciclo " + cur.cycle;
+  $("title").textContent = T("Renascimentos: Ciclo ") + cur.cycle;
   const [note, alert] = CYCLE_NOTES[cur.cycle];
   const n = $("cycle-note"); n.textContent = note; n.classList.toggle("alert", alert);
-  $("reset").textContent = "Resetar ciclo " + cur.cycle;
+  $("reset").textContent = T("Resetar ciclo ") + cur.cycle;
   $("target").value = String(state.target);
   $("hide-done").checked = prefs.hideDone;
 }
@@ -1721,34 +2441,34 @@ function render() {
     const n = i + 1;
     const node = el("article", "card"); node.id = "r" + n;
     const head = el("div", "card-head");
-    head.append(el("h2", "", "Nível " + (n - 1) + " → " + n), el("span", "credits", credits + " créditos"));
+    head.append(el("h2", "", T("Nível ") + (n - 1) + " → " + n), el("span", "credits", cr(credits) + T(" créditos")));
     const pill = el("span", "pill"); head.append(pill);
     const chipSum = el("span", "chip-sum"); head.append(chipSum);
     const lab = el("label", "check"); lab.htmlFor = "done-" + n;
     const check = el("input"); check.type = "checkbox"; check.id = "done-" + n;
     check.addEventListener("change", () => setMark("done", String(n), check.checked ? true : null));
-    lab.append(check, document.createTextNode("Renascimento concluído"));
+    lab.append(check, document.createTextNode(T("Renascimento concluído")));
     head.append(lab); node.append(head);
 
     const table = el("table"), thead = el("thead"), hr = el("tr");
-    ["Droid", "Pedido aqui", "Você tem", "Outros renascimentos", "Raridade máx.", "Depois deste"].forEach(h => { const th = el("th", "", h); th.scope = "col"; hr.append(th); });
+    ["Droid", T("Pedido aqui"), T("Você tem"), T("Outros renascimentos"), T("Raridade máx."), T("Depois deste")].forEach(h => { const th = el("th", "", h); th.scope = "col"; hr.append(th); });
     thead.append(hr); table.append(thead);
     const tbody = el("tbody"), rows = [];
     for (const [droid, need] of reqs) {
       const a = adviceFor(droid, n, state.target);
       const tr = el("tr");
       const c1 = el("td", "first"); const alt = el("span", "alt"); c1.append(el("span", "dname", droid), alt);
-      const c2 = el("td"); c2.dataset.label = "Pedido aqui"; c2.append(tierTag(need));
-      const c3 = el("td"); c3.dataset.label = "Você tem";
+      const c2 = el("td"); c2.dataset.label = T("Pedido aqui"); c2.append(tierTag(need));
+      const c3 = el("td"); c3.dataset.label = T("Você tem");
       const box = el("div");
       const sel = el("select"); sel.id = "have-" + n + "-" + slug(droid);
-      sel.setAttribute("aria-label", "Raridade que você tem de " + droid);
-      sel.append(new Option("Não tenho", "-1"));
+      sel.setAttribute("aria-label", T("Raridade que você tem de ") + droid);
+      sel.append(new Option(T("Não tenho"), "-1"));
       TIERS.forEach((t, idx) => sel.append(new Option(t, String(idx))));
       sel.addEventListener("change", () => { const v = Number(sel.value); setMark("have", droid, v < 0 ? null : v); });
       const loc = el("select", "loc"); loc.id = "loc-" + n + "-" + slug(droid);
-      loc.setAttribute("aria-label", "Onde está o " + droid);
-      loc.append(new Option("Onde está: não informado", "0"), new Option("Projeto guardado", "1"), new Option("Montado, em uso", "3"), new Option("Montado, no saguão", "4"), new Option("Montado, em bancada ou tanque", "5"));
+      loc.setAttribute("aria-label", T("Onde está o ") + droid);
+      loc.append(new Option(T("Onde está: não informado"), "0"), new Option(T("Projeto guardado"), "1"), new Option(T("Montado, em uso"), "3"), new Option(T("Montado, no saguão"), "4"), new Option(T("Montado, em bancada ou tanque"), "5"));
       loc.addEventListener("change", () => { const v = Number(loc.value); setMark("loc", droid, v ? v : null); });
       const status = el("span", "status");
       const chipsEl = el("span", "chips");
@@ -1758,30 +2478,30 @@ function render() {
       if (!locSelects.has(droid)) locSelects.set(droid, []);
       locSelects.get(droid).push(loc);
 
-      const c4 = el("td"); c4.dataset.label = "Outros renascimentos";
+      const c4 = el("td"); c4.dataset.label = T("Outros renascimentos");
       if (a.others.length) {
         const wrap = el("div", "others");
         for (const r of a.others) {
           const b = el("button", "jump" + (r.n < n ? " past" : "") + (a.next && r.n === a.next.n ? " next" : ""));
-          b.type = "button"; b.title = "Ir para o nível " + (r.n - 1) + " → " + r.n;
-          b.append(el("b", "", "Nv " + (r.n - 1)), tierTag(r.t));
+          b.type = "button"; b.title = T("Ir para o nível ") + (r.n - 1) + " → " + r.n;
+          b.append(el("b", "", T("Nv ") + (r.n - 1)), tierTag(r.t));
           b.addEventListener("click", () => jumpTo(r.n));
           wrap.append(b);
         }
         c4.append(wrap);
-      } else c4.append(el("span", "none", "Só neste"));
+      } else c4.append(el("span", "none", T("Só neste")));
 
-      const c5 = el("td"); c5.dataset.label = "Raridade máx."; c5.append(tierTag(a.maxTier));
-      const c6 = el("td"); c6.dataset.label = "Depois deste";
+      const c5 = el("td"); c5.dataset.label = T("Raridade máx."); c5.append(tierTag(a.maxTier));
+      const c6 = el("td"); c6.dataset.label = T("Depois deste");
       const box6 = el("div");
       if (a.canSell) {
-        box6.append(el("span", "after free", "Pode vender"));
+        box6.append(el("span", "after free", T("Pode vender")));
         const fus = fusionsUsing(droid);
-        if (fus.length) box6.append(el("span", "after-warn", "Entra em fusão: " + fus.join(", ")));
+        if (fus.length) box6.append(el("span", "after-warn", T("Entra em fusão: ") + fus.join(", ")));
       } else {
-        box6.append(el("span", "after keep", "Manter"));
+        box6.append(el("span", "after keep", T("Manter")));
         const up = a.next.t > need;
-        box6.append(el("span", "after-sub", "Volta no nível " + (a.next.n - 1) + (up ? ", em " + TIERS[a.next.t] : ", no mesmo nível ou menor")));
+        box6.append(el("span", "after-sub", T("Volta no nível ") + (a.next.n - 1) + (up ? T(", em ") + TIERS[a.next.t] : T(", no mesmo nível ou menor"))));
       }
       c6.append(box6);
       tr.append(c1, c2, c3, c4, c5, c6); tbody.append(tr);
@@ -1815,24 +2535,24 @@ function friendPlan() {
 }
 function renderFriend() {
   const { nextC, tgt, top } = friendPlan();
-  $("friend-title").textContent = "Projetos para um amigo guardar: Ciclo " + nextC;
-  $("friend-intro").textContent = "Antes do Super Renascimento que leva ao ciclo " + nextC + ", deixe estes projetos com um amigo. Cada um está na raridade mais alta que o ciclo " + nextC + " pede até o nível " + tgt + ", então cobre todos os pedidos daquele droid. Marque quando entregar.";
+  $("friend-title").textContent = T("Projetos para um amigo guardar: Ciclo ") + nextC;
+  $("friend-intro").textContent = T("Antes do Super Renascimento que leva ao ciclo ") + nextC + T(", deixe estes projetos com um amigo. Cada um está na raridade mais alta que o ciclo ") + nextC + T(" pede até o nível ") + tgt + T(", então cobre todos os pedidos daquele droid. Marque quando entregar.");
   const body = $("friend-body"); body.textContent = ""; friendRows = [];
   top.forEach((f, i) => {
     const tr = el("tr");
     const c1 = el("td", "first");
     c1.append(el("span", "rank", (i + 1) + "."), el("span", "dname", f.droid), el("span", "rar", RARITY_NAMES[RARITY[f.droid] ?? 2]));
-    const c2 = el("td"); c2.dataset.label = "Projeto a guardar"; c2.append(tierTag(f.maxTier));
-    const c3 = el("td", "cover"); c3.dataset.label = "Cobre no próximo ciclo";
-    c3.append(document.createTextNode(f.reqs.length === 1 ? "1 pedido" : f.reqs.length + " pedidos"));
-    c3.append(el("small", "", f.reqs.map(r => "Nv " + (r.n - 1) + " " + TIERS[r.t]).join(" · ")));
-    const c4 = el("td"); c4.dataset.label = "Valor aprox."; c4.append(el("span", "value", fmtCredits(f.value)));
-    const c5 = el("td"); c5.dataset.label = "Com o amigo";
+    const c2 = el("td"); c2.dataset.label = T("Projeto a guardar"); c2.append(tierTag(f.maxTier));
+    const c3 = el("td", "cover"); c3.dataset.label = T("Cobre no próximo ciclo");
+    c3.append(document.createTextNode(f.reqs.length === 1 ? T("1 pedido") : f.reqs.length + T(" pedidos")));
+    c3.append(el("small", "", f.reqs.map(r => T("Nv ") + (r.n - 1) + " " + TIERS[r.t]).join(" · ")));
+    const c4 = el("td"); c4.dataset.label = T("Valor aprox."); c4.append(el("span", "value", fmtCredits(f.value)));
+    const c5 = el("td"); c5.dataset.label = T("Com o amigo");
     const lab = el("label", "held");
     const cb = el("input"); cb.type = "checkbox"; cb.id = "held-" + slug(f.droid);
     cb.addEventListener("change", () => setMark("held", f.droid, cb.checked ? true : null));
     lab.htmlFor = cb.id;
-    lab.append(cb, document.createTextNode("Entregue"));
+    lab.append(cb, document.createTextNode(T("Entregue")));
     c5.append(lab);
     tr.append(c1, c2, c3, c4, c5); body.append(tr);
     friendRows.push({ droid: f.droid, tr, input: cb });
@@ -1875,33 +2595,33 @@ function update() {
       if (ok) met++;
       const soldOut = !!state.sold[r.droid] && !isDone;
       r.status.classList.toggle("good", (isDone || ok) && !soldOut);
-      r.status.textContent = soldOut ? "Marcado como vendido: precisa de outra cópia"
-        : isDone ? "Concluído"
-        : tierOk && where === 1 ? "Raridade certa, mas é projeto: monte para contar"
-        : ok ? (h === FLAGELO ? "Pronto: Flagelo vale para qualquer raridade" : r.need === KYBER ? "Pronto, se estiver ativado" : "Pronto")
-        : h < 0 ? "Falta conseguir" : "Falta subir para " + TIERS[r.need];
+      r.status.textContent = soldOut ? T("Marcado como vendido: precisa de outra cópia")
+        : isDone ? T("Concluído")
+        : tierOk && where === 1 ? T("Raridade certa, mas é projeto: monte para contar")
+        : ok ? (h === FLAGELO ? T("Pronto: Flagelo vale para qualquer raridade") : r.need === KYBER ? T("Pronto, se estiver ativado") : T("Pronto"))
+        : h < 0 ? T("Falta conseguir") : T("Falta subir para ") + TIERS[r.need];
       const chips = isDone || soldOut ? 0 : chipsNeeded(r.droid, h, r.need);
       chipTotal += chips;
       r.chipsEl.hidden = !chips;
-      r.chipsEl.textContent = chips ? chipText(chips) + (h < 0 ? ", depois de conseguir em Base" : "") : "";
+      r.chipsEl.textContent = chips ? chipText(chips) + (h < 0 ? T(", depois de conseguir em Base") : "") : "";
       // Desde a v1.38.0, uma fusão conta para o pedido de cada ingrediente dela.
       r.alt.hidden = !r.fus.length;
       if (r.fus.length) {
         const made = r.fus.filter(f => inv.state.f[f]);
         r.alt.textContent = "";
-        r.alt.append(document.createTextNode("Ou uma fusão: "));
-        r.fus.forEach((f, i) => { if (i) r.alt.append(document.createTextNode(", ")); r.alt.append(made.includes(f) ? el("b", "", f + " (fabricada)") : document.createTextNode(f)); });
+        r.alt.append(document.createTextNode(T("Ou uma fusão: ")));
+        r.fus.forEach((f, i) => { if (i) r.alt.append(document.createTextNode(", ")); r.alt.append(made.includes(f) ? el("b", "", f + T(" (fabricada)")) : document.createTextNode(f)); });
       }
       const hit = !view.q || r.name.includes(view.q) || r.fus.some(f => norm(f).includes(view.q));
       r.tr.hidden = !hit; if (hit) matched = true;
     }
     c.chipSum.textContent = "";
     c.chipSum.hidden = !chipTotal;
-    if (chipTotal) c.chipSum.append(document.createTextNode("Chips que faltam: "), el("b", "", fmtInt(chipTotal)));
+    if (chipTotal) c.chipSum.append(document.createTextNode(T("Chips que faltam: ")), el("b", "", fmtInt(chipTotal)));
     const isNext = c.n === next, isReady = !isDone && met === c.rows.length;
     c.node.className = "card" + (isDone ? " done" : isReady ? " ready" : isNext ? " now" : "");
     c.pill.className = "pill" + (isDone ? " done" : isReady ? " ready" : isNext ? " now" : "");
-    c.pill.textContent = isDone ? "Concluído" : isReady ? "Droids prontos" : (isNext ? "Próximo · " : "") + met + "/" + c.rows.length + " droids";
+    c.pill.textContent = isDone ? T("Concluído") : isReady ? T("Droids prontos") : (isNext ? T("Próximo · ") : "") + met + "/" + c.rows.length + " droids";
     const modeOk = view.mode === "all" || (view.mode === "next" && isNext);
     const hideIt = prefs.hideDone && isDone;
     if (hideIt && matched && modeOk) hiddenDone++;
@@ -1910,29 +2630,29 @@ function update() {
   }
   $("empty").hidden = visible > 0;
   $("hidden-note").hidden = !hiddenDone;
-  $("hidden-note").textContent = hiddenDone === 1 ? "1 renascimento concluído oculto." : hiddenDone + " renascimentos concluídos ocultos.";
+  $("hidden-note").textContent = hiddenDone === 1 ? T("1 renascimento concluído oculto.") : hiddenDone + T(" renascimentos concluídos ocultos.");
 
   const doneCount = cards.filter(c => state.done[c.n]).length;
   $("s-done").textContent = doneCount + "/" + state.target;
   const nc = cards.find(c => c.n === next);
-  $("s-next").textContent = next ? (next - 1) + " → " + next : "Fim";
-  $("s-next-sub").textContent = next ? "próximo renascimento, " + REBIRTHS[next - 1][0] + " créditos" : "você chegou à meta";
+  $("s-next").textContent = next ? (next - 1) + " → " + next : T("Fim");
+  $("s-next-sub").textContent = next ? T("próximo renascimento, ") + cr(REBIRTHS[next - 1][0]) + T(" créditos") : T("você chegou à meta");
   $("s-ready").textContent = nc ? nc.rows.filter(r => haveOf(r.droid) >= r.need && locOf(r.droid) !== 1).length + "/3" : "3/3";
 
   const sell = sellable(), pending = sell.filter(d => !state.sold[d]);
   $("s-sell").textContent = pending.length;
   $("sell-intro").textContent = sell.length
-    ? "Nenhum renascimento restante até a sua meta (nível " + state.target + ") pede estes droids. Marque ao vender."
-    : "Nada por enquanto. Um droid aparece aqui quando você conclui o último renascimento que o pede até a sua meta (nível " + state.target + ").";
+    ? T("Nenhum renascimento restante até a sua meta (nível ") + state.target + T(") pede estes droids. Marque ao vender.")
+    : T("Nada por enquanto. Um droid aparece aqui quando você conclui o último renascimento que o pede até a sua meta (nível ") + state.target + ").";
   const box = $("sell-list"); box.textContent = "";
   for (const d of sell) {
     const lab = el("label", "sell-item" + (state.sold[d] ? " gone" : ""));
     const cb = el("input"); cb.type = "checkbox"; cb.checked = !!state.sold[d];
-    cb.setAttribute("aria-label", "Vendido: " + d);
+    cb.setAttribute("aria-label", T("Vendido: ") + d);
     cb.addEventListener("change", () => setMark("sold", d, cb.checked ? true : null));
     lab.append(cb, el("span", "dname", d));
     const fus = fusionsUsing(d);
-    if (fus.length) lab.append(el("small", "", "Entra em fusão: " + fus.join(", ")));
+    if (fus.length) lab.append(el("small", "", T("Entra em fusão: ") + fus.join(", ")));
     box.append(lab);
   }
   for (const f of friendRows) {
@@ -1949,12 +2669,12 @@ function refreshCount(s) {
 $("q").addEventListener("input", e => { view.q = norm(e.target.value.trim()); update(); });
 onSeg("f-view", v => { view.mode = v; update(); });
 $("hide-done").addEventListener("change", e => { prefs.hideDone = e.target.checked; prefs.touched = true; savePrefs(); update(); });
-for (let n = 12; n <= 40; n++) $("target").append(new Option("Nível " + n, String(n)));
+for (let n = 12; n <= 40; n++) $("target").append(new Option(T("Nível ") + n, String(n)));
 $("target").addEventListener("change", e => { const v = Number(e.target.value); change(cur, st => { st.target = v; }); });
 $("reset").addEventListener("click", () => ask({
-  title: "Resetar o ciclo " + cur.cycle + "?",
-  text: "Isso apaga deste ciclo as raridades informadas, onde está cada droid, os renascimentos concluídos, os droids vendidos e os projetos marcados como entregues ao amigo, e a meta volta para o nível 40. Os outros ciclos, o inventário e o Scourgedex não mudam. Não dá para desfazer.",
-  yes: "Resetar ciclo " + cur.cycle, danger: true,
+  title: T("Resetar o ciclo ") + cur.cycle + "?",
+  text: T("Isso apaga deste ciclo as raridades informadas, onde está cada droid, os renascimentos concluídos, os droids vendidos e os projetos marcados como entregues ao amigo, e a meta volta para o nível 40. Os outros ciclos, o inventário e o Scourgedex não mudam. Não dá para desfazer."),
+  yes: T("Resetar ciclo ") + cur.cycle, danger: true,
 }, () => change(cur, st => { Object.assign(st, blank()); })));
 function selectCycle(c) {
   if (c === cur.cycle) return;
@@ -2008,7 +2728,7 @@ async function snapshot() {
     }
     ciclos[c] = st;
   }
-  return { app: "central-droid-tycoon", v: 1, data: new Date().toISOString().slice(0, 10), inventario: inv.state, scourgedex: sc.state, ciclos, prefs: { cycle: prefs.cycle, hideDone: prefs.hideDone, tab: prefs.tab, planOpen: prefs.planOpen } };
+  return { app: "central-droid-tycoon", v: 1, data: new Date().toISOString().slice(0, 10), inventario: inv.state, scourgedex: sc.state, ciclos, prefs: { cycle: prefs.cycle, hideDone: prefs.hideDone, tab: prefs.tab, planOpen: prefs.planOpen }, lang: LANG };
 }
 const encodeBk = o => "DT1:" + btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 function decodeBk(text) {
@@ -2022,8 +2742,8 @@ const bkSay = (t, bad) => { const e = $("bk-status"); e.textContent = t; e.class
 $("bk-copy").addEventListener("click", async () => {
   const code = encodeBk(await snapshot());
   $("bk-text").value = code;
-  try { await navigator.clipboard.writeText(code); bkSay("Código copiado. Guarde num lugar seguro ou cole em outro aparelho."); }
-  catch (e) { $("bk-text").select(); bkSay("Código pronto na caixa abaixo. Use Ctrl+C para copiar."); }
+  try { await navigator.clipboard.writeText(code); bkSay(T("Código copiado. Guarde num lugar seguro ou cole em outro aparelho.")); }
+  catch (e) { $("bk-text").select(); bkSay(T("Código pronto na caixa abaixo. Use Ctrl+C para copiar.")); }
 });
 $("bk-download").addEventListener("click", async () => {
   const o = await snapshot();
@@ -2031,18 +2751,18 @@ $("bk-download").addEventListener("click", async () => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(o, null, 1)], { type: "application/json" }));
     const a = document.createElement("a"); a.href = url; a.download = "droid-tycoon-backup-" + o.data + ".json";
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
-    bkSay("Arquivo de backup gerado.");
-  } catch (e) { $("bk-text").value = encodeBk(o); bkSay("Não deu para baixar aqui. O código está na caixa abaixo.", true); }
+    bkSay(T("Arquivo de backup gerado."));
+  } catch (e) { $("bk-text").value = encodeBk(o); bkSay(T("Não deu para baixar aqui. O código está na caixa abaixo."), true); }
 });
 $("bk-file").addEventListener("change", e => {
   const file = e.target.files && e.target.files[0]; if (!file) return;
-  file.text().then(t => { $("bk-text").value = t; bkSay("Arquivo carregado. Confira e toque em Restaurar."); }, () => bkSay("Não consegui ler o arquivo.", true));
+  file.text().then(t => { $("bk-text").value = t; bkSay(T("Arquivo carregado. Confira e toque em Restaurar.")); }, () => bkSay(T("Não consegui ler o arquivo."), true));
   e.target.value = "";
 });
 $("bk-restore").addEventListener("click", () => {
   let o;
-  try { o = decodeBk($("bk-text").value); } catch (e) { bkSay("Código inválido. Cole o código inteiro, começando por DT1:, ou abra o arquivo de backup.", true); return; }
-  ask({ title: "Restaurar este backup?", text: "Isso substitui tudo o que está salvo aqui (inventário, fusões, os 6 ciclos, Scourgedex e preferências) pelo backup de " + (o.data || "data desconhecida") + ". Não dá para desfazer.", yes: "Restaurar", danger: true }, async () => {
+  try { o = decodeBk($("bk-text").value); } catch (e) { bkSay(T("Código inválido. Cole o código inteiro, começando por DT1:, ou abra o arquivo de backup."), true); return; }
+  ask({ title: T("Restaurar este backup?"), text: T("Isso substitui tudo o que está salvo aqui (inventário, fusões, os 6 ciclos, Scourgedex e preferências) pelo backup de ") + (o.data || T("data desconhecida")) + T(". Não dá para desfazer."), yes: T("Restaurar"), danger: true }, async () => {
     const docs = [["inventario", "inventario-v2", inv.cleanFn(o.inventario)], ["scourgedex", "scourgedex-v1", sc.cleanFn(o.scourgedex)]];
     for (const c of Object.keys(CYCLES)) docs.push(["ciclo" + c, lsKey(c), clean(o.ciclos && o.ciclos[c])]);
     const p = o.prefs || {};
@@ -2050,11 +2770,12 @@ $("bk-restore").addEventListener("click", () => {
     for (const s of [inv, sc, cur]) { clearTimeout(s.timer); s.ref = null; if (s.unsub) s.unsub(); }
     for (const [, k, v] of docs) writeLS(k, v);
     writeLS(PREF_KEY, pr);
+    if (LANGS[o.lang]) { try { localStorage.setItem("cdt-lang", o.lang); } catch (e) { /* sem armazenamento */ } }
     if (conn.db) {
-      bkSay("Salvando na sua conta…");
+      bkSay(T("Salvando na sua conta…"));
       try {
         await Promise.all(docs.map(([id, , v]) => conn.db.doc("data/users/" + conn.uid + "/" + id).set(v)).concat(conn.db.doc("data/users/" + conn.uid + "/preferencias").set(pr)));
-      } catch (e) { bkSay("Restaurei neste navegador, mas não consegui salvar na conta.", true); return; }
+      } catch (e) { bkSay(T("Restaurei neste navegador, mas não consegui salvar na conta."), true); return; }
     }
     location.reload();
   });
@@ -2063,11 +2784,11 @@ $("bk-restore").addEventListener("click", () => {
 /* ---------- Código da ilha ---------- */
 $("copy-code").addEventListener("click", () => {
   const code = $("island-code").textContent;
-  const done = () => { $("copy-status").textContent = "Código copiado. Cole na busca de ilhas do Fortnite."; };
+  const done = () => { $("copy-status").textContent = T("Código copiado. Cole na busca de ilhas do Fortnite."); };
   const fallback = () => {
     const r = document.createRange(); r.selectNodeContents($("island-code"));
     const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
-    $("copy-status").textContent = "Código selecionado. Use Ctrl+C para copiar.";
+    $("copy-status").textContent = T("Código selecionado. Use Ctrl+C para copiar.");
   };
   try { navigator.clipboard.writeText(code).then(done, fallback); } catch (e) { fallback(); }
 });
@@ -2075,12 +2796,24 @@ $("copy-code").addEventListener("click", () => {
 /* ================= Versões ================= */
 // Versão da ilha (jogo) para a qual os dados estão atualizados, e versão desta ferramenta.
 const GAME_VERSION = "v1.40.0", GAME_DATE = "20/11/2026";
-const SITE_VERSION = IN_CLAUDE ? "Pré-Beta 14" : "v0.1 Beta";
+const SITE_VERSION = IN_CLAUDE ? T("Pré-Beta 14") : "v0.2 Beta";
+
+/* ---------- Seletor de idioma ---------- */
+document.querySelectorAll(".lang button").forEach(b => {
+  b.setAttribute("aria-pressed", String(b.dataset.lang === LANG));
+  b.addEventListener("click", async () => {
+    const v = b.dataset.lang; if (v === LANG) return;
+    try { localStorage.setItem("cdt-lang", v); } catch (e) { /* sem armazenamento */ }
+    // Grava na conta o que ainda estiver pendente antes de recarregar no novo idioma.
+    for (const s of [inv, sc, cur]) if (s.ref && s.loaded && s.dirty) { clearTimeout(s.timer); try { await flush(s); } catch (e) { /* segue */ } }
+    location.reload();
+  });
+});
 
 /* ================= Início ================= */
-$("game-ver").textContent = GAME_VERSION; $("game-ver-date").textContent = "de " + GAME_DATE;
-$("site-ver").textContent = "Versão do site: " + SITE_VERSION;
-if (!IN_CLAUDE) $("privacy").textContent = "Suas marcações ficam só neste navegador. Ninguém mais vê.";
+$("game-ver").textContent = GAME_VERSION; $("game-ver-date").textContent = { pt: "de " + GAME_DATE, en: "from Nov 20, 2026", es: "del 20/11/2026" }[LANG];
+$("site-ver").textContent = T("Versão do site: ") + SITE_VERSION;
+if (!IN_CLAUDE) $("privacy").textContent = T("Suas marcações ficam só neste navegador. Ninguém mais vê.");
 else $("bk-download").hidden = true;   // o visualizador do Claude não deixa baixar arquivos; o código de backup funciona
 buildInv(); buildFus(); buildFla();
 showTab(prefs.tab);

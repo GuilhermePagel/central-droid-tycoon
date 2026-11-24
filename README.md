@@ -1,14 +1,14 @@
 # Central Droid Tycoon
 
-Ferramenta de fã para a ilha **Star Wars: Droid Tycoon** do Fortnite (código da ilha `7865-8305-9184`, criada por FOAD).
+Ferramenta de fã para a ilha **Star Wars: Droid Tycoon** do Fortnite (código da ilha `7865-8305-9184`, criada por FOAD). Disponível em português (PT-BR), inglês (EN-US) e espanhol (ES).
 
-- **Versão do site:** v0.1 Beta
+- **Versão do site:** v0.2 Beta
 - **Dados atualizados para a ilha:** v1.40.0, de 20/11/2026
 
 Tudo roda numa página só, sem cadastro:
 
 - **Inventário:** marque os 112 droids que você tem. A página avisa quais guardar porque entram em fusões que você ainda não fabricou.
-- **Renascimentos:** os 40 renascimentos de cada um dos 6 ciclos, com a raridade pedida, os chips que faltam, onde o droid volta a ser pedido e o que já pode ser vendido.
+- **Renascimentos:** os 40 renascimentos de cada um dos 6 ciclos, com a raridade pedida, os chips que faltam, onde o droid volta a ser pedido, as fusões que valem por ele e o que já pode ser vendido.
 - **Controle Flagelo:** os 101 espaços do Scourgedex, os marcos, o contador de prestígios e um plano de fusões em Flagelo que gasta menos chips.
 - **Fusões:** as 28 receitas, com ingredientes separados, fusões fabricadas e favoritas.
 
@@ -19,12 +19,10 @@ Para levar o progresso para outro aparelho, use **Backup do progresso** no fim d
 
 Limpar os dados do navegador apaga o progresso. Faça backup de vez em quando.
 
-## Versões
+## Novidades
 
-As duas versões ficam no fim do script do `index.html`:
-
-- `GAME_VERSION` e `GAME_DATE`: a versão da ilha para a qual os dados estão atualizados. Aparece no canto superior direito.
-- `SITE_VERSION`: a versão desta ferramenta. Aparece no rodapé.
+- **v0.2 Beta:** seletor de idioma no topo, com versões em português (PT-BR), inglês (EN-US) e espanhol (ES). Na primeira visita, o idioma segue o do navegador.
+- **v0.1 Beta:** primeira versão pública.
 
 ## Fontes dos dados
 
