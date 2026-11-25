@@ -2,7 +2,7 @@
 
 Ferramenta de fã para a ilha **Star Wars: Droid Tycoon** do Fortnite (código da ilha `7865-8305-9184`, criada por FOAD). Disponível em português (PT-BR), inglês (EN-US) e espanhol (ES).
 
-- **Versão do site:** v0.2 Beta
+- **Versão do site:** v0.3 Beta
 - **Dados atualizados para a ilha:** v1.40.0, de 20/11/2026
 
 Tudo roda numa página só, sem cadastro:
@@ -21,6 +21,13 @@ Limpar os dados do navegador apaga o progresso. Faça backup de vez em quando.
 
 ## Novidades
 
+- **v0.3 Beta:**
+  - Inventário e Controle Flagelo na ordem do Scourgedex e do Droidex, com o número do espaço de cada droid.
+  - No Inventário, cada raridade pode ser recolhida, e "Só esta" mostra uma raridade só.
+  - Em Renascimentos, a seção "Pode vender agora" pode ser recolhida.
+  - Nova lista "Fusões montadas neste ciclo": a fusão na mesma raridade do pedido cobre o pedido do ingrediente.
+  - Nomes na grafia do jogo (B-U4D, Mono-WLKR, J09-4MN, OPTI-STRK, PIT). As marcações antigas são convertidas sozinhas.
+  - Ativar um Kyber custa Cristais Kyber. "Nova Crystals" passou a ser "Cristais Nova" em português.
 - **v0.2 Beta:** seletor de idioma no topo, com versões em português (PT-BR), inglês (EN-US) e espanhol (ES). Na primeira visita, o idioma segue o do navegador.
 - **v0.1 Beta:** primeira versão pública.
 
